@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Wellness — Rathi's Build Mart</title>
+<meta name="description" content="Hot tubs and jacuzzi, steam and spa, and swimming pools at Rathi's Build Mart.">
+<meta name="theme-color" content="#171619">
+
+<meta property="og:title" content="Wellness — Rathi's Build Mart">
+<meta property="og:description" content="Hot tubs and jacuzzi, steam and spa, and swimming pools at Rathi's Build Mart.">
+<meta property="og:type" content="website">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/styles.css?v=9">
+<script>document.documentElement.classList.add("js")</script>
+</head>
+
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+
+<header class="nav" id="nav">
+  <div class="nav__inner glass">
+    <a class="nav__brand" href="index.html" aria-label="Rathi's Build Mart — home">
+      <img src="assets/rbm-logo-gold-white.png" alt="Rathi's Build Mart" width="642" height="175">
+    </a>
+
+    <nav class="nav__links" id="nav-menu" aria-label="Primary">
+      <a href="products.html" aria-current="page">Products</a>
+      <a href="brands.html">Brands</a>
+      <a href="events.html">Events</a>
+      <a href="blogs.html">Blogs</a>
+      <a class="btn btn--primary nav__cta-mobile" href="contact.html">Contact Us</a>
+    </nav>
+
+    <a class="btn btn--primary nav__cta" href="contact.html">Contact Us</a>
+
+    <button class="nav__toggle" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="nav-menu">
+      <span class="nav__toggle-bar"></span>
+      <span class="nav__toggle-bar"></span>
+    </button>
+  </div>
+</header>
+
+<main id="main">
+<section class="cat cat--solo cat--wellness" id="wellness" aria-labelledby="wellness-title">
+
+  <div class="cat__hero">
+    <div class="cat__hero-media" aria-hidden="true">
+      <img src="assets/Products%20Page/Wellness/HeroImage.png" alt=""
+           width="1440" height="563" loading="lazy" decoding="async">
+    </div>
+    <div class="cat__hero-scrim" aria-hidden="true"></div>
+
+    <div class="cat__hero-body" data-px-frame="24">
+      <h1 class="cat__title reveal" id="wellness-title">Wellness</h1>
+      <p class="cat__lede reveal">
+        Discover a world of wellness designed to bring balance, comfort, and tranquility into your everyday life. From soothing spa essentials to thoughtfully curated products, create personal sanctuaries that nurture the senses and transform everyday routines into moments of relaxation and rejuvenation.
+      </p>
+      <div class="cat__cta reveal">
+        <a class="btn btn--primary btn--lg" href="#wellness-options">Explore More Below</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- TODO: point each href at its sub-category page once those exist. -->
+  <ul class="opts opts--trio" id="wellness-options">
+    <li class="opt reveal">
+      <a class="opt__link" href="brands.html#wellness">
+        <img src="assets/Products%20Page/Wellness/Hot%20Tub%20and%20Jacuzzi.png" alt="An indoor jacuzzi tub beside a window and potted plants"
+             width="1672" height="941" loading="lazy" decoding="async">
+        <span class="opt__veil" aria-hidden="true"></span>
+        <span class="opt__label">Hot Tub and Jacuzzi</span>
+      </a>
+    </li>
+
+    <li class="opt reveal">
+      <a class="opt__link" href="brands.html#wellness">
+        <img src="assets/Products%20Page/Wellness/Steam%20and%20Spa.png" alt="A spa treatment room with a massage bed, plants and shelved oils"
+             width="1671" height="941" loading="lazy" decoding="async">
+        <span class="opt__veil" aria-hidden="true"></span>
+        <span class="opt__label">Steam and Spa</span>
+      </a>
+    </li>
+
+    <li class="opt reveal">
+      <a class="opt__link" href="brands.html#wellness">
+        <img src="assets/Products%20Page/Wellness/Swimming%20Pool.png" alt="An outdoor swimming pool beside a planted courtyard wall"
+             width="1292" height="941" loading="lazy" decoding="async">
+        <span class="opt__veil" aria-hidden="true"></span>
+        <span class="opt__label">Swimming Pool</span>
+      </a>
+    </li>
+  </ul>
+
+</section>
+<!-- Where this category leads: its brands, a visit, or the next department. -->
+<section class="catfoot">
+  <div class="container">
+    <div class="catfoot__cta reveal">
+      <h2 class="catfoot__title">See who makes it.</h2>
+      <p class="catfoot__copy">
+        Every wellness brand we carry, on one page — with the rest of the
+        departments alongside.
+      </p>
+      <div class="catfoot__actions">
+        <a class="btn btn--primary btn--lg" href="brands.html#wellness">View wellness brands</a>
+        <a class="btn btn--ghost btn--lg" href="contact.html">Talk to a consultant</a>
+      </div>
+    </div>
+
+    <nav class="catnav reveal" aria-label="Other departments">
+      <a class="catnav__link catnav__link--prev" href="products-surfaces.html">
+        <span class="catnav__dir"><span aria-hidden="true">&larr;</span> Previous</span>
+        <span class="catnav__name">Surfaces</span>
+      </a>
+      <a class="catnav__all" href="products.html">All products</a>
+      <a class="catnav__link catnav__link--next" href="products-interiors.html">
+        <span class="catnav__dir">Next <span aria-hidden="true">&rarr;</span></span>
+        <span class="catnav__name">Interior Products</span>
+      </a>
+    </nav>
+  </div>
+</section>
+
+</main>
+
+<script src="js/main.js" defer></script>
+</body>
+</html>

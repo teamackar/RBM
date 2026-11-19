@@ -1,0 +1,579 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Brands — Rathi's Build Mart</title>
+<meta name="description" content="The brands stocked at Rathi's Build Mart, grouped by department: bath, surfaces, wellness, interior products, hardware fittings, doors and windows.">
+<meta name="theme-color" content="#171619">
+
+<meta property="og:title" content="Brands — Rathi's Build Mart">
+<meta property="og:description" content="Over a hundred national and international brands, department by department.">
+<meta property="og:type" content="website">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/styles.css?v=9">
+<script>document.documentElement.classList.add("js")</script>
+</head>
+
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+
+<!-- ───────────────────────── Nav ───────────────────────── -->
+<header class="nav" id="nav">
+  <div class="nav__inner glass">
+    <a class="nav__brand" href="index.html" aria-label="Rathi's Build Mart — home">
+      <img src="assets/rbm-logo-gold-white.png" alt="Rathi's Build Mart" width="642" height="175">
+    </a>
+
+    <nav class="nav__links" id="nav-menu" aria-label="Primary">
+      <a href="products.html">Products</a>
+      <a href="brands.html" aria-current="page">Brands</a>
+      <a href="events.html">Events</a>
+      <a href="blogs.html">Blogs</a>
+      <a class="btn btn--primary nav__cta-mobile" href="contact.html">Contact Us</a>
+    </nav>
+
+    <a class="btn btn--primary nav__cta" href="contact.html">Contact Us</a>
+
+    <button class="nav__toggle" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="nav-menu">
+      <span class="nav__toggle-bar"></span>
+      <span class="nav__toggle-bar"></span>
+    </button>
+  </div>
+</header>
+
+<main id="main">
+
+<section class="bpage">
+  <div class="container">
+
+    <div class="bpage__head">
+      <h1 class="bpage__title reveal">Our Brands</h1>
+      <p class="bpage__lede reveal">
+        The names we stock, grouped by where you will find them in
+        the store. Many sit in more than one category.
+      </p>
+    </div>
+
+    <!-- Department filter. Horizontal here; the same .btab styling
+         as the home page, laid on its side. -->
+    <div class="btabs btabs--row reveal" role="tablist" aria-label="Departments">
+      <button class="btab" type="button" role="tab" id="bt-bath"
+              aria-controls="brand-list" aria-selected="true" tabindex="0" data-cat="bath">Bath</button>
+      <button class="btab" type="button" role="tab" id="bt-surfaces"
+              aria-controls="brand-list" aria-selected="false" tabindex="-1" data-cat="surfaces">Surfaces</button>
+      <button class="btab" type="button" role="tab" id="bt-wellness"
+              aria-controls="brand-list" aria-selected="false" tabindex="-1" data-cat="wellness">Wellness</button>
+      <button class="btab" type="button" role="tab" id="bt-interiors"
+              aria-controls="brand-list" aria-selected="false" tabindex="-1" data-cat="interiors">Interior Products</button>
+      <button class="btab" type="button" role="tab" id="bt-hardware"
+              aria-controls="brand-list" aria-selected="false" tabindex="-1" data-cat="hardware">Hardware Fittings</button>
+      <button class="btab" type="button" role="tab" id="bt-doors"
+              aria-controls="brand-list" aria-selected="false" tabindex="-1" data-cat="doors">Doors and Windows</button>
+      <button class="btab" type="button" role="tab" id="bt-water"
+              aria-controls="brand-list" aria-selected="false" tabindex="-1" data-cat="water">Water Solution</button>
+    </div>
+
+    <!-- One list, filtered by the tabs. Rows alternate side by side;
+         the flip class is set from the visible order, not nth-child,
+         so filtering never leaves two images stacked on one edge. -->
+    <div class="blist" id="brand-list" role="tabpanel" aria-labelledby="bt-bath" data-brand-list>
+
+      <article class="bentry reveal" data-cats="bath wellness">
+        <div class="bentry__copy">
+          <h2 class="bentry__name">Hansgrohe</h2>
+          <p class="bentry__desc">
+            Taps and showers from Schiltach in the Black Forest, where the company has been
+            engineering water since 1901. Mixers, hand showers and rain heads built around
+            how the water actually feels, not just how it looks.
+          </p>
+        </div>
+        <figure class="bentry__media">
+          <img class="bentry__photo" src="assets/Products%20Page/Bath/04.png"
+               alt="Water running from a bronze tap into a white countertop basin"
+               width="1242" height="941" loading="lazy" decoding="async">
+          <span class="bentry__veil" aria-hidden="true"></span>
+          <img class="bentry__logo" src="assets/3-brand-logos/hansgrohe-1.png"
+               alt="hansgrohe" width="160" height="100" loading="lazy" decoding="async">
+        </figure>
+      </article>
+
+      <article class="bentry bentry--tagged bentry--partner reveal" data-cats="bath wellness">
+        <div class="bentry__copy">
+          <h2 class="bentry__name">Kohler</h2>
+          <p class="bentry__desc">
+            Founded in Wisconsin in 1873 and now one of the largest kitchen and bath names in
+            the world. Sanitaryware, intelligent toilets, basins, mixers and whirlpools, carried
+            here across both the bath and wellness floors.
+          </p>
+        </div>
+        <figure class="bentry__media">
+          <img class="bentry__photo" src="assets/Products%20Page/Bath/03.png"
+               alt="Backlit oval mirror above a fluted timber vanity"
+               width="1199" height="1312" loading="lazy" decoding="async">
+          <span class="bentry__veil" aria-hidden="true"></span>
+          <img class="bentry__logo" src="assets/3-brand-logos/Mask-group-10.png"
+               alt="Kohler" width="160" height="100" loading="lazy" decoding="async">
+          <span class="bentry__badge bentry__badge--partner">Certified Partner</span>
+        </figure>
+      </article>
+
+      <article class="bentry bentry--tagged bentry--partner reveal" data-cats="bath">
+        <div class="bentry__copy">
+          <h2 class="bentry__name">Fima Carlo Frattini</h2>
+          <p class="bentry__desc">
+            Italian brassware from the tap-making district around Lake Orta, designing and
+            manufacturing since 1969. Sculptural mixers and shower sets in finishes that run
+            from polished chrome to brushed brass and gunmetal.
+          </p>
+        </div>
+        <figure class="bentry__media">
+          <img class="bentry__photo" src="assets/Products%20Page/Bath/01.png"
+               alt="Tall bronze basin mixer over a stone vessel basin"
+               width="1402" height="1122" loading="lazy" decoding="async">
+          <span class="bentry__veil" aria-hidden="true"></span>
+          <img class="bentry__logo" src="assets/3-brand-logos/Mask-group-4.png"
+               alt="Fima Carlo Frattini" width="160" height="100" loading="lazy" decoding="async">
+          <span class="bentry__badge bentry__badge--partner">Certified Partner</span>
+        </figure>
+      </article>
+
+      <article class="bentry reveal" data-cats="bath hardware">
+        <div class="bentry__copy">
+          <h2 class="bentry__name">Franke</h2>
+          <p class="bentry__desc">
+            Swiss, and in kitchens since 1911. Sinks, mixers, waste systems and worktop fittings
+            built to commercial-kitchen tolerances, with bath accessories and washroom systems
+            alongside them.
+          </p>
+        </div>
+        <figure class="bentry__media">
+          <img class="bentry__photo" src="assets/Products%20Page/Hardware%20Fittings/Kitchen.png"
+               alt="A lift-up cabinet flap held open on a gas stay, with lit shelving"
+               width="1536" height="1024" loading="lazy" decoding="async">
+          <span class="bentry__veil" aria-hidden="true"></span>
+          <img class="bentry__logo" src="assets/3-brand-logos/Franke-2.png"
+               alt="Franke" width="160" height="100" loading="lazy" decoding="async">
+        </figure>
+      </article>
+
+      <article class="bentry reveal" data-cats="bath wellness">
+        <div class="bentry__copy">
+          <h2 class="bentry__name">Oyster</h2>
+          <p class="bentry__desc">
+            A Delhi bath house working the wellness end of the bathroom since 2003: acrylic and
+            freestanding tubs, whirlpools, shower enclosures, steam cabins and the spa systems
+            that go behind them.
+          </p>
+        </div>
+        <figure class="bentry__media">
+          <img class="bentry__photo" src="assets/Products%20Page/Wellness/Hot%20Tub%20and%20Jacuzzi.png"
+               alt="An indoor jacuzzi tub beside a window and potted plants"
+               width="1672" height="941" loading="lazy" decoding="async">
+          <span class="bentry__veil" aria-hidden="true"></span>
+          <img class="bentry__logo" src="assets/3-brand-logos/Mask-group-6.png"
+               alt="Oyster" width="160" height="100" loading="lazy" decoding="async">
+        </figure>
+      </article>
+
+      <!-- TODO: brand copy to confirm with Rathi's (name spelling included). -->
+      <article class="bentry reveal" data-cats="bath">
+        <div class="bentry__copy">
+          <h2 class="bentry__name">Sofpour</h2>
+          <p class="bentry__desc">
+            The dependable, value-led end of the bath department: everyday fittings, sanitaryware
+            and accessories, specified where a project needs volume without dropping the
+            standard of the fit.
+          </p>
+        </div>
+        <figure class="bentry__media">
+          <img class="bentry__photo" src="assets/Products%20Page/Bath/02.png"
+               alt="Fluted soap dispenser and toothbrush holder on a stone tray"
+               width="1199" height="1312" loading="lazy" decoding="async">
+          <span class="bentry__veil" aria-hidden="true"></span>
+          <img class="bentry__logo" src="assets/3-brand-logos/Sofpure-1.png"
+               alt="Sofpour" width="160" height="100" loading="lazy" decoding="async">
+        </figure>
+      </article>
+
+      <article class="bentry reveal" data-cats="surfaces" hidden>
+        <div class="bentry__copy">
+          <h2 class="bentry__name">Stonelam</h2>
+          <p class="bentry__desc">
+            The Indian partner of Italy's Laminam, with ultra-thin porcelain slabs up to 3.2 metres
+            long for floors, walls, façades and worktops — one surface, running almost joint-free
+            across a whole room.
+          </p>
+        </div>
+        <figure class="bentry__media">
+          <img class="bentry__photo" src="assets/Products%20Page/Surfaces%20Imagery/Slabs.png"
+               alt="Book-matched veined marble slab behind a curved sofa"
+               width="1758" height="1312" loading="lazy" decoding="async">
+          <span class="bentry__veil" aria-hidden="true"></span>
+          <img class="bentry__logo" src="assets/3-brand-logos/Stonelam-1.png"
+               alt="Stonelam" width="160" height="100" loading="lazy" decoding="async">
+        </figure>
+      </article>
+
+      <article class="bentry reveal" data-cats="surfaces" hidden>
+        <div class="bentry__copy">
+          <h2 class="bentry__name">Nexion</h2>
+          <p class="bentry__desc">
+            Italian porcelain in stone, wood and concrete effects. Through-body tiles and large
+            slabs made for floors that take real traffic and still read as natural material years
+            in.
+          </p>
+        </div>
+        <figure class="bentry__media">
+          <img class="bentry__photo" src="assets/Products%20Page/Surfaces%20Imagery/Concrete%20Flooring.png"
+               alt="Polished concrete floor in a sunlit living room"
+               width="1633" height="1184" loading="lazy" decoding="async">
+          <span class="bentry__veil" aria-hidden="true"></span>
+          <img class="bentry__logo" src="assets/3-brand-logos/Mask-group-7.png"
+               alt="Nexion" width="160" height="100" loading="lazy" decoding="async">
+        </figure>
+      </article>
+
+      <article class="bentry reveal" data-cats="surfaces" hidden>
+        <div class="bentry__copy">
+          <h2 class="bentry__name">Haique</h2>
+          <p class="bentry__desc">
+            Engineered quartz, milled in Udaipur. Haique runs fashion-led veining and colour
+            through full-size slabs for kitchen counters, vanities and islands that have to stay
+            stain-free for twenty years.
+          </p>
+        </div>
+        <figure class="bentry__media">
+          <img class="bentry__photo" src="assets/Products%20Page/Surfaces%20Imagery/Quartz.png"
+               alt="White quartz waterfall island in a kitchen"
+               width="1758" height="1184" loading="lazy" decoding="async">
+          <span class="bentry__veil" aria-hidden="true"></span>
+          <img class="bentry__logo" src="assets/3-brand-logos/haique-2.png"
+               alt="haique" width="160" height="100" loading="lazy" decoding="async">
+        </figure>
+      </article>
+
+      <!-- TODO: brand copy to confirm with Rathi's. -->
+      <article class="bentry bentry--tagged bentry--inhouse reveal" data-cats="surfaces" hidden>
+        <div class="bentry__copy">
+          <h2 class="bentry__name">Ceramuse</h2>
+          <p class="bentry__desc">
+            Bespoke ceramic and marble, made to the room rather than to a catalogue. Ceramuse is
+            the craft end of the surfaces floor: matched slabs, cut work and panels made for one
+            wall in one house.
+          </p>
+        </div>
+        <figure class="bentry__media">
+          <img class="bentry__photo" src="assets/Products%20Page/Surfaces%20Imagery/Mosaic.png"
+               alt="Arched mosaic mural lit by an arc floor lamp"
+               width="1758" height="1787" loading="lazy" decoding="async">
+          <span class="bentry__veil" aria-hidden="true"></span>
+          <img class="bentry__logo" src="assets/3-brand-logos/Ceramuse-1.png"
+               alt="Ceramuse" width="160" height="100" loading="lazy" decoding="async">
+          <span class="bentry__badge bentry__badge--inhouse">In-house Brand</span>
+        </figure>
+      </article>
+
+      <!-- TODO: brand copy to confirm with Rathi's. -->
+      <article class="bentry reveal" data-cats="surfaces" hidden>
+        <div class="bentry__copy">
+          <h2 class="bentry__name">axiSTONE</h2>
+          <p class="bentry__desc">
+            Sintered stone slabs for kitchens and bathrooms: heat, stain and scratch resistant, in
+            thin large formats that carry a worktop and its splashback in a single piece of
+            material.
+          </p>
+        </div>
+        <figure class="bentry__media">
+          <img class="bentry__photo" src="assets/Products%20Page/Surfaces%20Imagery/Semi%20Precious%20Stone.png"
+               alt="Backlit onyx panel behind pale sofas"
+               width="1633" height="1787" loading="lazy" decoding="async">
+          <span class="bentry__veil" aria-hidden="true"></span>
+          <img class="bentry__logo" src="assets/3-brand-logos/axiStone.png"
+               alt="axiSTONE" width="160" height="100" loading="lazy" decoding="async">
+        </figure>
+      </article>
+
+      <!-- TODO: brand copy to confirm with Rathi's. -->
+      <article class="bentry reveal" data-cats="surfaces" hidden>
+        <div class="bentry__copy">
+          <h2 class="bentry__name">axi marble</h2>
+          <p class="bentry__desc">
+            Marble and marble-look surfaces in large format, book-matched so the veining runs
+            unbroken across a feature wall, a vanity top or the length of a dining table.
+          </p>
+        </div>
+        <figure class="bentry__media">
+          <img class="bentry__photo" src="assets/categories/Sunlit%20Marble%20Showroom%20with%20Greenery.png"
+               alt="A sunlit showroom of marble slabs with planting"
+               width="1086" height="1448" loading="lazy" decoding="async">
+          <span class="bentry__veil" aria-hidden="true"></span>
+          <img class="bentry__logo" src="assets/3-brand-logos/Mask-group-8.png"
+               alt="axi marble" width="160" height="100" loading="lazy" decoding="async">
+        </figure>
+      </article>
+
+      <!-- TODO: brand copy to confirm with Rathi's. -->
+      <article class="bentry reveal" data-cats="surfaces" hidden>
+        <div class="bentry__copy">
+          <h2 class="bentry__name">Icon</h2>
+          <p class="bentry__desc">
+            Large-format vitrified tiles and slabs in marble, stone and concrete finishes, for
+            floors and walls that need to run unbroken across a big room with as few lines in them
+            as possible.
+          </p>
+        </div>
+        <figure class="bentry__media">
+          <img class="bentry__photo" src="assets/Products%20Page/Surfaces%20Imagery/Tiles.png"
+               alt="Large grey marble-effect tiles beside a terrazzo side table"
+               width="1603" height="1312" loading="lazy" decoding="async">
+          <span class="bentry__veil" aria-hidden="true"></span>
+          <img class="bentry__logo" src="assets/3-brand-logos/Icon-2.png"
+               alt="Icon" width="160" height="100" loading="lazy" decoding="async">
+        </figure>
+      </article>
+
+      <article class="bentry reveal" data-cats="surfaces" hidden>
+        <div class="bentry__copy">
+          <h2 class="bentry__name">Mozart</h2>
+          <p class="bentry__desc">
+            Full-body vitrified tiles from Morbi, in matt and textured finishes. The colour runs
+            right through the body, so chips and years of traffic never show up as a pale edge.
+          </p>
+        </div>
+        <figure class="bentry__media">
+          <img class="bentry__photo" src="assets/Products%20Page/Surfaces%20Imagery/Mini%20Tiles.png"
+               alt="Green mini-tile wall behind a basin and arched mirror"
+               width="1662" height="1184" loading="lazy" decoding="async">
+          <span class="bentry__veil" aria-hidden="true"></span>
+          <img class="bentry__logo" src="assets/3-brand-logos/Mozart-1.png"
+               alt="Mozart" width="160" height="100" loading="lazy" decoding="async">
+        </figure>
+      </article>
+
+      <article class="bentry reveal" data-cats="surfaces" hidden>
+        <div class="bentry__copy">
+          <h2 class="bentry__name">FlexStone</h2>
+          <p class="bentry__desc">
+            Real stone, sliced thin and backed so that it bends. Flexible veneer sheets wrap
+            columns, curves and furniture in places a rigid slab simply cannot be made to go.
+          </p>
+        </div>
+        <figure class="bentry__media">
+          <img class="bentry__photo" src="assets/Products%20Page/Surfaces%20Imagery/Flexstone.png"
+               alt="Stacked stone cladding wall behind boucle armchairs"
+               width="1650" height="1312" loading="lazy" decoding="async">
+          <span class="bentry__veil" aria-hidden="true"></span>
+          <img class="bentry__logo" src="assets/3-brand-logos/Mask-group-9.png"
+               alt="FlexStone" width="160" height="100" loading="lazy" decoding="async">
+        </figure>
+      </article>
+
+      <!-- TODO: brand copy to confirm with Rathi's. -->
+      <article class="bentry reveal" data-cats="surfaces interiors" hidden>
+        <div class="bentry__copy">
+          <h2 class="bentry__name">Thunder Wood</h2>
+          <p class="bentry__desc">
+            Wood for floors and walls: engineered planks and wood-finish surfaces in oak, walnut
+            and smoked tones, for rooms that want warmth underfoot rather than stone.
+          </p>
+        </div>
+        <figure class="bentry__media">
+          <img class="bentry__photo" src="assets/Products%20Page/Surfaces%20Imagery/Wooden%20Floor.png"
+               alt="Dark wooden flooring with a round travertine table"
+               width="1912" height="1787" loading="lazy" decoding="async">
+          <span class="bentry__veil" aria-hidden="true"></span>
+          <img class="bentry__logo" src="assets/3-brand-logos/Thunder-Wood-1.png"
+               alt="Thunder Wood" width="160" height="100" loading="lazy" decoding="async">
+        </figure>
+      </article>
+
+      <!-- TODO: brand copy to confirm with Rathi's. -->
+      <article class="bentry reveal" data-cats="surfaces interiors" hidden>
+        <div class="bentry__copy">
+          <h2 class="bentry__name">Ego</h2>
+          <p class="bentry__desc">
+            Wood and vinyl floors: engineered boards, laminate planks and luxury vinyl in widths
+            and tones that suit a whole floor plate rather than a single room.
+          </p>
+        </div>
+        <figure class="bentry__media">
+          <img class="bentry__photo" src="assets/Products%20Page/Interior%20Products/Laminates.png"
+               alt="Wood-laminate flooring beneath an olive sofa by a garden window"
+               width="1671" height="941" loading="lazy" decoding="async">
+          <span class="bentry__veil" aria-hidden="true"></span>
+          <img class="bentry__logo" src="assets/3-brand-logos/Ego.png"
+               alt="Ego" width="160" height="100" loading="lazy" decoding="async">
+        </figure>
+      </article>
+
+      <article class="bentry reveal" data-cats="hardware interiors" hidden>
+        <div class="bentry__copy">
+          <h2 class="bentry__name">Häfele</h2>
+          <p class="bentry__desc">
+            German hardware, out of Nagold since 1923. The parts that make furniture work:
+            hinges, drawer runners, lift systems, locks, lighting and the full kitchen and
+            wardrobe fit-out behind the doors.
+          </p>
+        </div>
+        <figure class="bentry__media">
+          <img class="bentry__photo" src="assets/Products%20Page/Hardware%20Fittings/Wardrobes.png"
+               alt="A soft-close drawer box running out of a fitted wardrobe"
+               width="1536" height="1024" loading="lazy" decoding="async">
+          <span class="bentry__veil" aria-hidden="true"></span>
+          <img class="bentry__logo" src="assets/3-brand-logos/Hafele-1.png"
+               alt="Häfele" width="160" height="100" loading="lazy" decoding="async">
+        </figure>
+      </article>
+
+      <article class="bentry reveal" data-cats="interiors" hidden>
+        <div class="bentry__copy">
+          <h2 class="bentry__name">Vox</h2>
+          <p class="bentry__desc">
+            A Polish interiors house making wall and ceiling panelling, slat systems, doors and
+            furniture fronts — a finishing system for a whole room rather than a single product
+            line.
+          </p>
+        </div>
+        <figure class="bentry__media">
+          <img class="bentry__photo" src="assets/Products%20Page/Interior%20Products/Ceiling%20And%20Wall%20Panels.png"
+               alt="Slatted timber ceiling and wall panels with recessed lighting"
+               width="943" height="941" loading="lazy" decoding="async">
+          <span class="bentry__veil" aria-hidden="true"></span>
+          <img class="bentry__logo" src="assets/3-brand-logos/Vox-1.png"
+               alt="Vox" width="160" height="100" loading="lazy" decoding="async">
+        </figure>
+      </article>
+
+      <article class="bentry reveal" data-cats="interiors" hidden>
+        <div class="bentry__copy">
+          <h2 class="bentry__name">RAVS</h2>
+          <p class="bentry__desc">
+            Designer and decorative veneers, natural and reconstituted, sequence-matched so that a
+            run of doors or a full wardrobe wall reads as one single piece of timber.
+          </p>
+        </div>
+        <figure class="bentry__media">
+          <img class="bentry__photo" src="assets/Products%20Page/Interior%20Products/Veneer.png"
+               alt="A walnut veneer study wall with lit shelving and a desk"
+               width="1073" height="941" loading="lazy" decoding="async">
+          <span class="bentry__veil" aria-hidden="true"></span>
+          <img class="bentry__logo" src="assets/3-brand-logos/Ravs-1.png"
+               alt="RAVS" width="160" height="100" loading="lazy" decoding="async">
+        </figure>
+      </article>
+
+      <!-- TODO: brand copy to confirm with Rathi's. -->
+      <article class="bentry reveal" data-cats="interiors" hidden>
+        <div class="bentry__copy">
+          <h2 class="bentry__name">Everest Ply</h2>
+          <p class="bentry__desc">
+            Plywood, blockboards and WPC boards for carcassing, furniture and wet areas — the
+            structure that sits under the finish, in grades from commercial through to marine.
+          </p>
+        </div>
+        <figure class="bentry__media">
+          <img class="bentry__photo" src="assets/Products%20Page/Interior%20Products/Plywood%20and%20WPC%20Boards.png"
+               alt="A pale plywood-panelled living room with a round timber table"
+               width="1060" height="941" loading="lazy" decoding="async">
+          <span class="bentry__veil" aria-hidden="true"></span>
+          <img class="bentry__logo" src="assets/3-brand-logos/Everest-ply-1.png"
+               alt="Everest Ply" width="160" height="100" loading="lazy" decoding="async">
+        </figure>
+      </article>
+
+      <article class="bentry reveal" data-cats="hardware" hidden>
+        <div class="bentry__copy">
+          <h2 class="bentry__name">Labacha</h2>
+          <p class="bentry__desc">
+            Furniture fittings and handles in brass and zinc: cabinet pulls, long profile handles
+            and mortise sets for main doors, in finishes from chrome and antique brass through to
+            rose gold and matt black.
+          </p>
+        </div>
+        <figure class="bentry__media">
+          <img class="bentry__photo" src="assets/Products%20Page/Hardware%20Fittings/Doors.png"
+               alt="A lever handle on a flush timber door"
+               width="1243" height="1024" loading="lazy" decoding="async">
+          <span class="bentry__veil" aria-hidden="true"></span>
+          <img class="bentry__logo" src="assets/3-brand-logos/labacha.png"
+               alt="Labacha" width="160" height="100" loading="lazy" decoding="async">
+        </figure>
+      </article>
+
+      <article class="bentry reveal" data-cats="doors" hidden>
+        <div class="bentry__copy">
+          <h2 class="bentry__name">Schüco</h2>
+          <p class="bentry__desc">
+            The German systems house for aluminium and uPVC. Schüco engineers the profile, the
+            gasket and the hardware as one tested system, which is why it holds against wind,
+            driving rain and forced entry.
+          </p>
+        </div>
+        <figure class="bentry__media">
+          <img class="bentry__photo" src="assets/Products%20Page/Doors%20and%20Windows/Aluminum%20Windows.png"
+               alt="Slim aluminium window frames against daylight"
+               width="1108" height="1024" loading="lazy" decoding="async">
+          <span class="bentry__veil" aria-hidden="true"></span>
+          <img class="bentry__logo" src="assets/3-brand-logos/Schuco.png"
+               alt="Schüco" width="160" height="100" loading="lazy" decoding="async">
+        </figure>
+      </article>
+
+      <article class="bentry bentry--tagged bentry--inhouse reveal" data-cats="doors" hidden>
+        <div class="bentry__copy">
+          <h2 class="bentry__name">Lucasta</h2>
+          <p class="bentry__desc">
+            Luxury fenestration: slim-framed sliding and openable systems, designed so that the
+            glass does the talking and the frame all but disappears into the reveal.
+          </p>
+        </div>
+        <figure class="bentry__media">
+          <img class="bentry__photo" src="assets/Products%20Page/Doors%20and%20Windows/HeroImage.png"
+               alt="A wall of slim-framed glazing opening onto a terrace"
+               width="1536" height="762" loading="lazy" decoding="async">
+          <span class="bentry__veil" aria-hidden="true"></span>
+          <img class="bentry__logo" src="assets/3-brand-logos/Lucasta-1-1.png"
+               alt="Lucasta" width="160" height="100" loading="lazy" decoding="async">
+          <span class="bentry__badge bentry__badge--inhouse">In-house Brand</span>
+        </figure>
+      </article>
+
+      <article class="bentry reveal" data-cats="doors" hidden>
+        <div class="bentry__copy">
+          <h2 class="bentry__name">Eternia</h2>
+          <p class="bentry__desc">
+            Hindalco's window brand. Aluminium window and door systems made for Indian weather and
+            tested against driving rain, dust and street noise before they go anywhere near a
+            site.
+          </p>
+        </div>
+        <figure class="bentry__media">
+          <img class="bentry__photo" src="assets/Products%20Page/Doors%20and%20Windows/UPVC%20Windows.png"
+               alt="A window system in a bright interior"
+               width="1122" height="1024" loading="lazy" decoding="async">
+          <span class="bentry__veil" aria-hidden="true"></span>
+          <img class="bentry__logo" src="assets/3-brand-logos/Group-1-2.png"
+               alt="Eternia" width="160" height="100" loading="lazy" decoding="async">
+        </figure>
+      </article>
+
+    </div>
+
+    <p class="blist__empty" data-brand-empty hidden>
+      We are still confirming the brand list for this category.
+      <a href="contact.html">Ask a consultant</a> and we will tell you exactly what we stock.
+    </p>
+
+  </div>
+</section>
+
+</main>
+
+<script src="js/main.js" defer></script>
+<script src="js/brands.js" defer></script>
+</body>
+</html>

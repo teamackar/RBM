@@ -380,9 +380,10 @@
   (function parallax() {
     if (reduceMotion) return;
 
-    // No early return on an empty list any more: brands, contact and
-    // events carry no parallax nodes, but they all carry the backdrop.
     var nodes = document.querySelectorAll('[data-px-scroll],[data-px-frame]');
+    // The page backdrop tiles with the document now, so it needs no
+    // frame of its own: a page without parallax nodes has no loop.
+    if (!nodes.length) return;
 
     var items = [];
     Array.prototype.forEach.call(nodes, function (el) {
@@ -401,34 +402,10 @@
 
     var queued = false;
 
-    /* The page backdrop drifts against the scroll. It is a fixed layer,
-       so without this it is the one thing on the page that never moves,
-       which is what flattens it. Travel is a share of the viewport, not
-       of the document, so a long page and a short one feel the same.
-
-       Written to :root as --bg-py rather than --py, because --py
-       inherits: setting it high up would push every element that reads
-       `var(--py, 0px)` without owning a value of its own. */
-    var root = document.documentElement;
-    var bgLast = null;
-
-    function backdrop(vh, y) {
-      var travel = Math.max(1, root.scrollHeight - vh);
-      var progress = Math.min(1, Math.max(0, y / travel));
-      // 12vh of drift inside the layer's 14vh of headroom, so no
-      // scroll position can ever pull an edge into frame.
-      var offset = Math.round(-progress * vh * 0.12 * 100) / 100;
-      if (offset === bgLast) return;
-      bgLast = offset;
-      root.style.setProperty('--bg-py', offset + 'px');
-    }
-
     function frame() {
       queued = false;
       var vh = window.innerHeight || document.documentElement.clientHeight;
       var y = window.scrollY || window.pageYOffset;
-
-      backdrop(vh, y);
 
       for (var i = 0; i < items.length; i++) {
         var item = items[i];

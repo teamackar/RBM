@@ -1973,59 +1973,49 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 
 
 /* ── Page backdrop ─────────────────────────────────────── */
-/* The bronze-arc plate sits behind the whole site on a fixed layer,
-   so it reads as depth in the ground rather than as a picture that
-   scrolls. Two crops of the same artwork: the wide one for landscape
-   viewports, the tall one once the viewport goes portrait.
+/* A dark ribbed plate tiled behind the whole site. It is laid on the
+   body, not on a fixed layer, so it travels with the content: the ribs
+   pass the viewport as you scroll, which is what sells them as a wall
+   rather than as wallpaper pinned to the glass.
 
-   Two dials, not one. The tint sets how much of the plate shows; the
-   saturate puts the bronze back, because compositing against a neutral
-   charcoal drains the hue long before it drains the brightness. At the
-   first pass the arcs measured a chroma of 5 — grey — which is why the
-   colour was unreadable. Saturation costs almost nothing in luminance,
-   so the hue is bought cheaply and the brightness stays low.
-   The radial still sits over the artwork's hot centre, the one part
-   bright enough to pull focus on its own. */
+   The artwork is mirrored down its horizontal axis in the file
+   (1672x1882 — the source crop and its flip, stacked), so the tile's
+   last row equals its first and `repeat-y` has no seam at any scroll
+   position. Measured on the encoded tile: 4/255 worst-case step across
+   the join, against a ground of 20 — below the threshold where an edge
+   is visible.
+
+   Levels were baked in rather than filtered at runtime. As delivered
+   the plate means L 7.7, far under the brand charcoal (L 22), so laying
+   it down raw would have dropped the whole site into black. Lifted, the
+   rib valleys land on the charcoal and the crests rise to a warm
+   rgb(69,62,59) — ivory type over the brightest point holds 8:1. */
 :root{
-  --bg-art:url("../assets/bg/bg-wide.webp");
-  /* Measured: arcs land at rgb(69,51,44), chroma 25, hue 17deg —
-     a bronze you can name. Ivory type over the brightest point
-     holds 9.3:1. */
-  --bg-tint:rgba(23,22,25,.76);
-}
-@media (max-aspect-ratio:1/1){
-  :root{
-    --bg-art:url("../assets/bg/bg-tall.webp");
-    /* The portrait crop is tighter, so its arcs already read brighter
-       on their own and need a shade more cover to match. */
-    --bg-tint:rgba(23,22,25,.78);
-  }
+  --bg-art:url("../assets/bg/bg-ribbed.webp");
+  /* One dial for the whole backdrop. A warm near-black wash: it takes
+     the plate down and pulls the ribs toward the champagne side of the
+     palette at the same time, which a neutral grey wash cannot do —
+     at this ground the texture is nearly all hue, so a neutral one just
+     reads blue. Raise the alpha to sink it further; drop it to bring
+     the ribs back. Composited: valleys rgb(21,18,18), crests
+     rgb(46,40,36), and ivory type over the brightest point holds
+     11.5:1. */
+  --bg-tint:rgba(18,13,9,.46);
 }
 
-body::before{
-  content:"";
-  /* Taller than the viewport on purpose: the layer drifts up to 12vh
-     against the scroll (--bg-py, written by the parallax loop), and
-     14vh of headroom top and bottom means no drift can pull an edge
-     into frame. Falls back to a still layer when the loop never runs,
-     which is what happens under prefers-reduced-motion. */
-  position:fixed;left:0;right:0;top:-14vh;height:128vh;
-  z-index:-10;pointer-events:none;
-  transform:translate3d(0,var(--bg-py,0px),0);
-  will-change:transform;
+body{
+  /* First layer paints on top: the wash sits over the plate. It is a
+     flat gradient rather than a colour because background-color can
+     only sit underneath an opaque image. */
   background-image:
-    radial-gradient(84% 62% at 40% 48%,
-      rgba(23,22,25,.6) 0%, rgba(23,22,25,.22) 48%, rgba(23,22,25,0) 74%),
-    linear-gradient(var(--bg-tint), var(--bg-tint)),
+    linear-gradient(var(--bg-tint),var(--bg-tint)),
     var(--bg-art);
-  background-repeat:no-repeat;
-  background-position:center;
-  background-size:cover;
-  filter:saturate(2.3);
-}
-
-/* Sections that carry their own photograph already cover the plate;
-   this only matters where a panel is glass over open ground. */
-@media (prefers-reduced-transparency:reduce){
-  body::before{display:none}
+  background-repeat:repeat,repeat-y;
+  background-position:center top,center top;
+  /* Ribs scale with the viewport, at a 30px pitch on a 1440 screen.
+     The floor stops them crowding into moire on a phone: below 980px
+     the tile stays 980 wide and is simply cropped to centre, so there
+     is never a horizontal edge to meet either. */
+  background-size:auto,100% auto;
+  background-size:auto,max(100%,980px) auto;
 }

@@ -1973,23 +1973,23 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 
 
 /* ── Page backdrop ─────────────────────────────────────── */
-/* A dark ribbed plate tiled behind the whole site. It is laid on the
-   body, not on a fixed layer, so it travels with the content: the ribs
-   pass the viewport as you scroll, which is what sells them as a wall
-   rather than as wallpaper pinned to the glass.
+/* A dark ribbed plate behind the whole site, tiled and travelling with
+   the scroll — the ribs pass the viewport as you go, which is what
+   sells them as a wall rather than as wallpaper pinned to the glass.
 
    The artwork is mirrored down its horizontal axis in the file
    (1672x1882 — the source crop and its flip, stacked), so the tile's
    last row equals its first and `repeat-y` has no seam at any scroll
    position. Measured on the encoded tile: 4/255 worst-case step across
    the join, against a ground of 20 — below the threshold where an edge
-   is visible.
+   is visible. That seamlessness is what lets the layer below be
+   translated by an arbitrary amount and wrapped: there is no edge to
+   run out of, however far the page scrolls.
 
-   Levels were baked in rather than filtered at runtime. As delivered
-   the plate means L 7.7, far under the brand charcoal (L 22), so laying
-   it down raw would have dropped the whole site into black. Lifted, the
-   rib valleys land on the charcoal and the crests rise to a warm
-   rgb(69,62,59) — ivory type over the brightest point holds 8:1. */
+   Levels were baked into the file rather than filtered at runtime. As
+   delivered the plate means L 7.7, far under the brand charcoal
+   (L 22), so laying it down raw would have dropped the whole site into
+   black. */
 :root{
   --bg-art:url("../assets/bg/bg-ribbed.webp");
   /* One dial for the whole backdrop. A warm near-black wash: it takes
@@ -1997,25 +1997,82 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
      palette at the same time, which a neutral grey wash cannot do —
      at this ground the texture is nearly all hue, so a neutral one just
      reads blue. Raise the alpha to sink it further; drop it to bring
-     the ribs back. Composited: valleys rgb(21,18,18), crests
-     rgb(46,40,36), and ivory type over the brightest point holds
-     11.5:1. */
-  --bg-tint:rgba(18,13,9,.46);
+     the ribs back. Composited: a mean of rgb(17,14,13), crests at
+     rgb(33,27,25), and ivory type over the brightest point holds
+     13.4:1. */
+  --bg-tint:rgba(11,8,5,.6);
+  /* The light on the wall. Vertical flutes are invariant along Y —
+     slide them up and the screen does not change; measured, an 800px
+     shift moved the composited pixels by a mean of 0.9/255, which is
+     why the plate alone could travel at half speed and read as frozen.
+     A broad champagne band is the one thing in the stack that does vary
+     down the page, so it is what makes the travel visible. One band per
+     tile, transparent at both ends of the period, so it joins itself
+     across the tile boundary exactly as the artwork does. */
+  --bg-sheen:linear-gradient(to bottom,
+    rgba(208,182,139,0) 0%,
+    rgba(208,182,139,.028) 18%,
+    rgba(208,182,139,.075) 34%,
+    rgba(208,182,139,.030) 50%,
+    rgba(208,182,139,0) 68%,
+    rgba(208,182,139,0) 100%);
 }
 
+/* Ground state, and what a page keeps when the parallax loop never
+   runs — no JS, or prefers-reduced-motion: the plate tiled on the body
+   itself, travelling 1:1 with the content. */
 body{
   /* First layer paints on top: the wash sits over the plate. It is a
      flat gradient rather than a colour because background-color can
      only sit underneath an opaque image. */
   background-image:
+    var(--bg-sheen),
     linear-gradient(var(--bg-tint),var(--bg-tint)),
     var(--bg-art);
-  background-repeat:repeat,repeat-y;
-  background-position:center top,center top;
+  background-repeat:repeat-y,repeat,repeat-y;
+  background-position:center top,center top,center top;
   /* Ribs scale with the viewport, at a 30px pitch on a 1440 screen.
      The floor stops them crowding into moire on a phone: below 980px
      the tile stays 980 wide and is simply cropped to centre, so there
      is never a horizontal edge to meet either. */
-  background-size:auto,100% auto;
-  background-size:auto,max(100%,980px) auto;
+  background-size:100% var(--bg-h,1500px),auto,100% auto;
+  background-size:100% var(--bg-h,1500px),auto,max(100%,980px) auto;
+}
+
+/* Once main.js has established that motion is allowed it sets .px-bg,
+   and the plate moves off the body onto a fixed layer the loop drags
+   at half the scroll speed.
+
+   Why move it at all: animating background-position on the body would
+   invalidate the whole scrolling layer every frame, and this page
+   paints backdrop-filter glass into that layer. A transform on a layer
+   of its own stays on the compositor and costs nothing to repaint. */
+.px-bg body{background-image:none}
+
+.px-bg body::before{
+  content:"";
+  position:fixed;left:0;right:0;top:0;
+  /* A tile of headroom below the fold. The layer rides up by as much
+     as one tile before its offset wraps back to zero, and that much
+     extra height means the wrap can never pull the bottom into frame. */
+  height:calc(100vh + var(--bg-h,1130px));
+  z-index:-10;pointer-events:none;
+  transform:translate3d(0,var(--bg-py,0px),0);
+  will-change:transform;
+  background-image:
+    var(--bg-sheen),
+    linear-gradient(var(--bg-tint),var(--bg-tint)),
+    var(--bg-art);
+  background-repeat:repeat-y,repeat,repeat-y;
+  background-position:center top,center top,center top;
+  /* The loop pins both axes in whole pixels, so the distance it wraps
+     at and the browser's tile step are the same number. Left to `auto`
+     the tile height would be fractional, and a wrap against a
+     fractional period walks a hairline across the plate once per turn.
+     The sheen is given that same period, so one wrap returns every
+     layer in the stack to where it started. */
+  background-size:
+    100% var(--bg-h,1500px),
+    auto,
+    var(--bg-w,max(100%,980px)) var(--bg-h,auto);
 }

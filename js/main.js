@@ -380,10 +380,9 @@
   (function parallax() {
     if (reduceMotion) return;
 
+    // No early return on an empty list: brands, contact and events
+    // carry no parallax nodes, but they all carry the backdrop.
     var nodes = document.querySelectorAll('[data-px-scroll],[data-px-frame]');
-    // The page backdrop tiles with the document now, so it needs no
-    // frame of its own: a page without parallax nodes has no loop.
-    if (!nodes.length) return;
 
     var items = [];
     Array.prototype.forEach.call(nodes, function (el) {
@@ -402,10 +401,50 @@
 
     var queued = false;
 
+    /* The page backdrop, dragged at half the page's speed.
+
+       Claiming the layer: the plate lives on the body until this line
+       runs, so a browser that never gets here — scripting off, motion
+       reduced — keeps a backdrop that simply scrolls, rather than one
+       frozen to the viewport waiting for a frame that is not coming. */
+    var root = document.documentElement;
+    root.classList.add('px-bg');
+
+    // 1672x1882 — the tile's own proportions. Height is pinned in whole
+    // pixels because the wrap below counts in them: CSS is told the same
+    // integer, so its tile step and this period cannot drift apart.
+    var TILE = 1882 / 1672;
+    var tileH = 0;
+
+    function measure() {
+      var w = Math.max(root.clientWidth, 980);
+      tileH = Math.round(w * TILE);
+      root.style.setProperty('--bg-w', w + 'px');
+      root.style.setProperty('--bg-h', tileH + 'px');
+    }
+
+    var bgLast = null;
+
+    function backdrop(y) {
+      /* Half speed, wrapped into one tile. Wrapping is what makes the
+         travel unbounded: the offset never exceeds a tile, so a layer
+         one tile taller than the fold covers every frame, and because
+         the artwork repeats on exactly that period the reset is not
+         visible. Without it the offset would grow with the document
+         and the plate would run off the bottom of a long page. */
+      var offset = -((y * 0.5) % tileH);
+      offset = Math.round(offset * 100) / 100;
+      if (offset === bgLast) return;
+      bgLast = offset;
+      root.style.setProperty('--bg-py', offset + 'px');
+    }
+
     function frame() {
       queued = false;
       var vh = window.innerHeight || document.documentElement.clientHeight;
       var y = window.scrollY || window.pageYOffset;
+
+      backdrop(y);
 
       for (var i = 0; i < items.length; i++) {
         var item = items[i];
@@ -437,8 +476,14 @@
     }
 
     window.addEventListener('scroll', request, { passive: true });
-    window.addEventListener('resize', request);
+    window.addEventListener('resize', function () {
+      // Tile size follows the viewport width, so it is re-measured
+      // before the frame that reads it.
+      measure();
+      request();
+    });
     window.addEventListener('load', request);
+    measure();
     request();
   }());
 

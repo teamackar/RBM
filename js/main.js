@@ -487,6 +487,101 @@
     request();
   }());
 
+  /* ── Marquees ───────────────────────────────────────────
+     The events page carries three kinds of drifting strip:
+     the two rows of the hero collage and one run of photos
+     per event. A seamless loop needs two copies of the set —
+     the track travels exactly -50% and lands back where it
+     started — so the second copy is cloned here rather than
+     written out twice in the markup.
+
+     The animation is gated on the clone, not on the class in
+     the markup: a page that never reaches this code keeps a
+     strip that sits still and can be pushed by hand, instead
+     of one that slides half a set and snaps back. That covers
+     scripting off, reduced motion and data-saver alike.   */
+  (function marquees() {
+    var rails = document.querySelectorAll('[data-marquee]');
+    if (!rails.length || reduceMotion || saveData) return;
+
+    Array.prototype.forEach.call(rails, function (rail) {
+      var set = rail.querySelector('[data-marquee-set]');
+      if (!set) return;
+
+      var copy = set.cloneNode(true);
+      // The copy is decoration: off the accessibility tree, out
+      // of the tab order, and not itself a cloning target.
+      copy.setAttribute('aria-hidden', 'true');
+      copy.removeAttribute('data-marquee-set');
+      Array.prototype.forEach.call(copy.querySelectorAll('a,button,[tabindex]'), function (n) {
+        n.setAttribute('tabindex', '-1');
+      });
+
+      set.parentNode.appendChild(copy);
+      rail.classList.add('is-looped');
+    });
+  }());
+
+  /* ── Curved fan ─────────────────────────────────────────
+     The campaign's run of photographs is a scroller, so the
+     curve has to travel with it: each frame is turned and
+     enlarged by how far its middle sits from the middle of
+     the run, which keeps whichever frame is under the eye the
+     flat one and the frames at either edge the most turned.
+
+     Pinning the angles to the first five frames in CSS would
+     have been cheaper, but the curve would then slide off as
+     soon as the reader pushed the strip along.             */
+  (function fan() {
+    var rails = document.querySelectorAll('[data-fan]');
+    if (!rails.length) return;
+
+    Array.prototype.forEach.call(rails, function (rail) {
+      var items = rail.querySelectorAll('.efan__item');
+      if (!items.length) return;
+
+      // Open on the middle of the run, both ends already off
+      // the edges. Worth doing even when the curve is not:
+      // it is the framing the design asks for.
+      rail.scrollLeft = (rail.scrollWidth - rail.clientWidth) / 2;
+      if (reduceMotion) return;
+
+      var queued = false;
+
+      function paint() {
+        queued = false;
+        var box = rail.getBoundingClientRect();
+        var mid = box.left + box.width / 2;
+        var reach = box.width / 2 || 1;
+
+        for (var i = 0; i < items.length; i++) {
+          var r = items[i].getBoundingClientRect();
+          // -1 at the left edge of the run, +1 at the right.
+          var d = ((r.left + r.width / 2) - mid) / reach;
+          if (d < -1.5) d = -1.5; else if (d > 1.5) d = 1.5;
+          items[i].style.setProperty('--ry', (-d * 20).toFixed(2) + 'deg');
+          items[i].style.setProperty('--sc', (1 + Math.abs(d) * 0.17).toFixed(3));
+        }
+      }
+
+      function request() {
+        if (queued) return;
+        queued = true;
+        requestAnimationFrame(paint);
+      }
+
+      rail.addEventListener('scroll', request, { passive: true });
+      window.addEventListener('resize', function () {
+        // Frame widths follow the viewport, so the run is
+        // re-centred before it is re-drawn.
+        rail.scrollLeft = (rail.scrollWidth - rail.clientWidth) / 2;
+        request();
+      });
+      window.addEventListener('load', request);
+      paint();
+    });
+  }());
+
   /* ── Reveal on scroll ──────────────────────────────────── */
   (function reveal() {
     var items = document.querySelectorAll('.reveal');

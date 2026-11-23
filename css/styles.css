@@ -49,7 +49,11 @@
   --dur-switch:1.5s;
 
   /* Layout */
-  --container:1240px;
+  /* Holds at 1240 up to roughly a 1440 screen — a MacBook at
+     1470 sees essentially what it saw before — then opens up
+     so a 1080p desktop is not reading a 1144px column with
+     390px of empty ground either side of it. */
+  --container:clamp(1240px,86vw,1500px);
   --gutter:clamp(20px,5vw,48px);
   /* Left inset that lines the rail up with .container's text.
      Percentage, not 100vw — vw includes the scrollbar. */
@@ -2075,4 +2079,396 @@ body{
     100% var(--bg-h,1500px),
     auto,
     var(--bg-w,max(100%,980px)) var(--bg-h,auto);
+}
+
+
+/* ─────────────────────────────────────────────────────────
+   EVENTS PAGE
+   The page is a wall of other people's photographs, so the
+   type has to hold its own against them: one compact hero
+   over a moving collage, then each event announced by its
+   name at display size before its pictures arrive.
+   ───────────────────────────────────────────────────────── */
+
+/* ── Events hero ───────────────────────────────────────── */
+/* Shorter than the products hero (62svh): the collage behind
+   it is already doing the talking, and the first event wants
+   to be within reach of the fold. */
+.phero--tight{
+  min-height:min(69svh,642px);
+  padding-block:clamp(120px,17vh,168px) clamp(44px,6.5vh,68px);
+}
+.phero--tight .phero__title{font-size:clamp(2.3rem,6.6vw,4.75rem)}
+.phero--tight .phero__rule{width:min(340px,48vw)}
+.phero--tight .phero__lede{max-width:56ch;margin-top:clamp(14px,2vw,20px)}
+.phero--tight .phero__cue{margin-top:clamp(20px,2.8vw,30px)}
+
+/* ── Hero collage ──────────────────────────────────────── */
+/* Two rows of event photography drifting against each other.
+   A still frame would do the job, but the whole argument of
+   this page is that something is always happening on the
+   floor — so the backdrop moves, slowly enough to read as
+   texture rather than as a carousel.
+
+   The wash is carried here rather than in .phero__scrim
+   because these frames ship at full brightness, unlike the
+   pre-darkened plate the products hero sits on. */
+.ecollage{
+  position:absolute;inset:0;z-index:-2;
+  overflow:hidden;background:var(--charcoal);
+  display:grid;grid-template-rows:1fr 1fr;gap:var(--ec-gap);
+  --ec-gap:clamp(8px,1vw,14px);
+}
+.ecollage::after{
+  content:"";position:absolute;inset:0;
+  background:rgba(23,22,25,.74);
+}
+.ecollage__row{position:relative;overflow:hidden}
+.ecollage__track{
+  position:absolute;left:0;top:0;bottom:0;
+  display:flex;width:max-content;
+}
+/* The filter rides on each frame, not on the track: a static
+   filter on a moving layer would be re-applied every frame,
+   while this one rasterises once and is composited after. */
+.ecollage__set{display:flex;height:100%}
+.ecollage__set img{
+  height:100%;width:auto;object-fit:cover;
+  margin-right:var(--ec-gap);
+  filter:saturate(.62) brightness(.88);
+}
+/* Looping needs two copies of the set, and main.js makes the
+   second one. Until it has, nothing moves — a half-set sliding
+   to -50% would snap back in plain sight. */
+.ecollage__row.is-looped .ecollage__track{
+  animation:ec-drift var(--ec-dur,104s) linear infinite;
+  will-change:transform;
+}
+.ecollage__row--b .ecollage__track{animation-direction:reverse;--ec-dur:132s}
+@keyframes ec-drift{
+  from{transform:translate3d(0,0,0)}
+  to{transform:translate3d(-50%,0,0)}
+}
+
+/* ── Scatter: what the evenings are ────────────────────── */
+/* Five tiles on a twelve-column grid, deliberately off the
+   centre line: two columns of copy pinned to opposite corners
+   with the photographs falling between them. */
+.escatter{padding-block:clamp(54px,8vh,94px) clamp(34px,5vh,64px)}
+.escatter__grid{
+  display:grid;
+  grid-template-columns:repeat(12,1fr);
+  gap:clamp(16px,2.2vw,30px);
+}
+.escatter__note{
+  align-self:start;
+  font-size:clamp(.875rem,1.15vw,.9375rem);
+  font-weight:300;line-height:1.75;color:var(--ink-muted);
+  text-wrap:pretty;
+}
+.escatter__note strong{font-weight:500;color:var(--ink)}
+.escatter__shot{margin:0;overflow:hidden;border-radius:var(--radius-sm)}
+.escatter__shot img{width:100%;height:100%;object-fit:cover}
+.escatter__shot--lead{border-radius:var(--radius)}
+
+/* Two rows. The copy sits in the outer columns — the first
+   block ranged left at the top, the second ranged right at
+   the bottom, against the outside margin in both cases — with
+   the lead plate down the middle spanning both. The small
+   frames are deliberately small: in the design they are notes
+   beside the plate, not rivals to it. */
+@media (min-width:861px){
+  .escatter__grid{align-items:start}
+  .escatter__note--a   {grid-area:1 /  1 / 2 /  6}
+  .escatter__shot--lead{grid-area:1 /  6 / 3 / 10;aspect-ratio:9/10}
+  .escatter__shot--a   {grid-area:1 / 11 / 2 / 13;aspect-ratio:11/5}
+  .escatter__shot--b   {grid-area:2 /  1 / 3 /  3;aspect-ratio:19/10;align-self:end}
+  .escatter__note--b   {grid-area:2 / 10 / 3 / 13;text-align:right;align-self:end}
+}
+
+/* Stacked, but the two small frames stay paired on one line:
+   left to wrap on their own they each take a column and leave
+   the other half of the row empty. */
+@media (max-width:860px){
+  .escatter__grid{grid-template-columns:1fr 1fr;gap:clamp(14px,3vw,20px)}
+  .escatter__note--a   {grid-area:1 / 1 / 2 / 3}
+  .escatter__shot--lead{grid-area:2 / 1 / 3 / 3;aspect-ratio:4/3;height:auto}
+  .escatter__shot--a   {grid-area:3 / 1 / 4 / 2;aspect-ratio:1/1}
+  .escatter__shot--b   {grid-area:3 / 2 / 4 / 3;aspect-ratio:1/1}
+  .escatter__note--b   {grid-area:4 / 1 / 5 / 3}
+}
+
+/* ── Lead event: the campaign ──────────────────────────── */
+/* Fayde Ke 20 Din is the campaign of the year rather than a
+   brand launch, so it takes the centred treatment and the
+   whole width where the launches take a mosaic.
+
+   `--em` is the name's own width in ems at this weight, so
+   dividing the available measure by it lands the type on the
+   margins whatever the name's length. cqw is read off the
+   banner's content box rather than 100vw, which would count
+   the scrollbar and push the name a few pixels over. */
+.elead{
+  margin-top:clamp(64px,10vh,128px);
+  scroll-margin-top:clamp(88px,12vh,120px);
+  text-align:center;
+}
+.elead__banner{padding-inline:clamp(12px,2.2vw,30px);container-type:inline-size}
+.elead__name{
+  font-family:var(--font-display);font-weight:400;
+  text-transform:uppercase;
+  line-height:.94;letter-spacing:-.012em;
+  /* Sized to the measure below, so it is always set to fit;
+     this only guarantees it, since a balanced wrap would
+     otherwise break a long name over two lines. */
+  white-space:nowrap;
+  font-size:clamp(1.5rem,9.4vw,10rem);
+}
+@supports (container-type:inline-size){
+  .elead__name{font-size:clamp(2rem,calc(100cqw / var(--em,9)),10rem)}
+}
+.elead__sub{
+  margin-top:clamp(20px,3.2vw,44px);
+  font-family:var(--font-display);font-weight:400;
+  font-size:clamp(1.5rem,4.2vw,3.4rem);
+  line-height:1.1;letter-spacing:-.015em;
+  text-wrap:balance;
+}
+.elead__lede{
+  margin:clamp(12px,1.8vw,20px) auto 0;max-width:54ch;
+  font-size:clamp(.8125rem,1.05vw,.9375rem);
+  font-weight:300;line-height:1.7;color:var(--ink-muted);
+  text-wrap:pretty;
+}
+
+/* ── The fan ───────────────────────────────────────────── */
+/* One row, bled past both edges and set on a shallow curve.
+   The outer frames stand nearer the reader and are keystoned
+   by the perspective, so the run reads as bent around them
+   rather than laid flat on the page — which is also what
+   lets both ends run off the screen without a hard edge. */
+.efan{
+  margin-top:clamp(26px,4vw,50px);
+  margin-inline:calc(50% - 50vw);
+  display:flex;align-items:center;
+  gap:clamp(10px,1.9vw,28px);
+  padding-block:clamp(16px,2.6vw,38px);
+  /* Pushed by hand. main.js opens it on the middle of the run
+     so both outer frames start off the edges, as in the
+     design; with no script it simply begins at the first. */
+  overflow-x:auto;overflow-y:hidden;
+  scrollbar-width:none;
+  overscroll-behavior-x:contain;
+  scroll-behavior:auto;
+}
+.efan::-webkit-scrollbar{display:none}
+.efan__item{
+  flex:0 0 auto;margin:0;
+  width:clamp(150px,23.5vw,348px);
+  aspect-ratio:21/20;
+  overflow:hidden;border-radius:var(--radius-sm);
+  background:var(--graphite);
+  /* The perspective belongs to each frame, not to the row.
+     Shared on the parent it also projects every frame away
+     from the centre of the row, so the outer ones slide off
+     sideways and open gaps; given per frame, the vanishing
+     point is the frame's own middle and the turn is a clean
+     keystone in place. Size is then scale's job alone. */
+  transform:perspective(820px) rotateY(var(--ry,0deg)) scale(var(--sc,1));
+}
+.efan__item img{width:100%;height:100%;object-fit:cover}
+
+/* --ry and --sc are written by main.js from each frame's
+   distance to the middle of the run, so the curve follows the
+   scroll instead of being pinned to the first five frames.
+   Unset, every frame is simply flat. */
+
+/* Narrower frames on a phone, so more than one is in view. */
+@media (max-width:760px){
+  .efan{padding-inline:var(--gutter)}
+  .efan__item{width:clamp(150px,56vw,240px)}
+}
+
+/* ── One event ─────────────────────────────────────────── */
+.eevents{padding-block:clamp(54px,8vh,94px) clamp(20px,3vh,36px)}
+.eevent{margin-top:clamp(72px,11vh,142px);scroll-margin-top:clamp(88px,12vh,120px)}
+
+/* The heading is a cell of the mosaic, not a band above it.
+   That is the whole point of the arrangement: the columns of
+   photographs start at different depths and step around the
+   title, so the block reads as one composition rather than a
+   caption with a gallery underneath. */
+.emosaic{
+  display:grid;
+  grid-template-columns:repeat(5,1fr);
+  grid-auto-rows:clamp(28px,3.5vw,52px);
+  gap:clamp(8px,1vw,14px);
+}
+.emosaic__head{align-self:start}
+.eevent__name{
+  font-family:var(--font-display);font-weight:400;
+  text-transform:uppercase;
+  font-size:clamp(1.5rem,3.9vw,3.25rem);
+  line-height:1.04;letter-spacing:-.015em;
+  text-wrap:balance;
+}
+.eevent__lede{
+  margin-top:clamp(12px,1.6vw,20px);max-width:44ch;
+  font-size:clamp(.8125rem,1.05vw,.9375rem);
+  font-weight:300;line-height:1.7;color:var(--ink-muted);
+  text-wrap:pretty;
+}
+.emosaic__fig{margin:0;overflow:hidden;border-radius:var(--radius-sm);background:var(--graphite)}
+.emosaic__fig img{width:100%;height:100%;object-fit:cover}
+
+/* The step pattern. Every frame's height is a count of the
+   row unit above, which is what lets two neighbouring columns
+   begin and end at different points; left to auto-placement
+   they would all start flush against the same top edge.
+
+   Written longest-first so an event with one photograph fewer
+   simply drops the last, smallest frame rather than tearing a
+   hole in the middle of the grid. */
+@media (min-width:861px){
+  .emosaic__head{grid-area:1 / 1 / 5 / 4}
+
+  /* Stepped at the top, flush along the bottom. The staggered
+     starts are what make the block read as a composition; the
+     common baseline is what stops it reading as debris. Every
+     frame therefore ends on line 13, whatever its height. */
+  .emosaic--full .emosaic__fig:nth-of-type(1){grid-area: 1 / 5 / 13 / 6}
+  .emosaic--full .emosaic__fig:nth-of-type(2){grid-area: 2 / 4 /  8 / 5}
+  .emosaic--full .emosaic__fig:nth-of-type(3){grid-area: 8 / 4 / 13 / 5}
+  .emosaic--full .emosaic__fig:nth-of-type(4){grid-area: 6 / 3 / 10 / 4}
+  .emosaic--full .emosaic__fig:nth-of-type(5){grid-area:10 / 3 / 13 / 4}
+  .emosaic--full .emosaic__fig:nth-of-type(6){grid-area: 5 / 2 / 10 / 3}
+  .emosaic--full .emosaic__fig:nth-of-type(7){grid-area: 5 / 1 / 13 / 2}
+  .emosaic--full .emosaic__fig:nth-of-type(8){grid-area:10 / 2 / 13 / 3}
+
+  /* One frame short of a full set: the second column runs the
+     whole depth as a single plate rather than leaving a hole
+     where the eighth would have gone. */
+  .emosaic--seven .emosaic__fig:nth-of-type(6){grid-area: 5 / 2 / 13 / 3}
+
+  /* Four frames need wider columns or they read as a strip. */
+  .emosaic--quad{grid-template-columns:repeat(3,1fr)}
+  .emosaic--quad .emosaic__head{grid-area:1 / 1 / 5 / 3}
+  .emosaic--quad .emosaic__fig:nth-of-type(1){grid-area: 1 / 3 / 13 / 4}
+  .emosaic--quad .emosaic__fig:nth-of-type(2){grid-area: 5 / 2 /  9 / 3}
+  .emosaic--quad .emosaic__fig:nth-of-type(3){grid-area: 9 / 2 / 13 / 3}
+  .emosaic--quad .emosaic__fig:nth-of-type(4){grid-area: 6 / 1 / 13 / 2}
+}
+
+/* Two columns and ordinary packing: the stepping needs five
+   columns of room, and forcing it into a phone's width turns
+   every frame into a sliver.
+
+   Row 1 is declared `auto` so the heading, which is pinned to
+   it, sizes to its own text. Left to grid-auto-rows the head
+   would get one fixed track and its lede would spill out
+   behind the photographs below. */
+@media (max-width:860px){
+  .emosaic{
+    grid-template-columns:1fr 1fr;
+    grid-template-rows:auto;
+    grid-auto-rows:clamp(26px,6.5vw,44px);
+    grid-auto-flow:row dense;
+  }
+  .emosaic__head{grid-area:1 / 1 / 2 / 3;padding-bottom:clamp(10px,3vw,18px)}
+  .emosaic__fig{grid-row:span 5}
+  .emosaic__fig:nth-of-type(3n+1){grid-row:span 7}
+  .emosaic__fig:nth-of-type(3n+2){grid-row:span 4}
+}
+
+@media (prefers-reduced-motion:reduce){
+  .ecollage__row.is-looped .ecollage__track{animation:none}
+}
+
+
+/* ── Upcoming events ───────────────────────────────────── */
+/* What is still to come, ahead of the archive below it. The
+   date is given its own column at display size because it is
+   the one thing a reader is scanning this list for. */
+.upnext{padding-block:clamp(56px,8vh,96px) clamp(76px,11vh,132px)}
+.esec-title{
+  font-family:var(--font-display);font-weight:400;
+  font-size:clamp(2rem,5.6vw,4.5rem);
+  line-height:1.14;letter-spacing:-.015em;text-align:center;
+  text-wrap:balance;
+}
+/* A grid of equal rows rather than a stack: in the design
+   both cards stand the same height whatever their copy runs
+   to, which also keeps the two plates on one ratio. */
+.upnext__list{
+  margin-top:clamp(28px,4vw,46px);
+  display:grid;grid-auto-rows:1fr;
+  gap:clamp(14px,1.8vw,22px);
+}
+
+.upcard{
+  display:grid;
+  grid-template-columns:clamp(124px,20%,232px) 1fr clamp(190px,29%,330px);
+  align-items:center;
+  gap:clamp(14px,2vw,30px);
+  padding:clamp(16px,1.8vw,24px);
+}
+.upcard__when{text-align:center}
+.upcard__day{
+  display:block;
+  font-family:var(--font-display);font-weight:400;
+  font-size:clamp(2.75rem,7.8vw,7rem);
+  line-height:.92;letter-spacing:-.03em;
+}
+.upcard__month{
+  display:block;margin-top:clamp(4px,.6vw,10px);
+  font-family:var(--font-display);font-weight:400;
+  font-size:clamp(1rem,2vw,1.75rem);
+  line-height:1.15;color:var(--ink);
+}
+.upcard__name{
+  font-family:var(--font-display);font-weight:400;
+  font-size:clamp(1.25rem,2.2vw,1.95rem);
+  line-height:1.16;letter-spacing:-.01em;
+}
+.upcard__copy{
+  margin-top:clamp(10px,1.2vw,14px);max-width:46ch;
+  font-size:clamp(.8125rem,1.05vw,.9375rem);
+  font-weight:300;line-height:1.65;color:var(--ink-muted);
+  text-wrap:pretty;
+}
+.upcard__cta{margin-top:clamp(14px,1.8vw,20px)}
+/* Stretched to the card rather than given a ratio: the plate
+   should run the full depth beside the copy, as it does in
+   the design. The floor stops it collapsing to a letterbox
+   behind a one-line description. */
+.upcard__media{
+  margin:0;overflow:hidden;border-radius:var(--radius-sm);
+  align-self:stretch;min-height:clamp(132px,15vw,194px);
+  background:var(--graphite);
+}
+.upcard__media img{width:100%;height:100%;object-fit:cover}
+
+/* Small pill, because the card already has a heading and a
+   date competing for the eye. */
+.btn--sm{
+  min-height:40px;padding:10px 20px;
+  font-size:.75rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;
+}
+
+/* The picture leads on a narrow screen; the date and the name
+   sit side by side beneath it so the day is still the first
+   thing read. */
+@media (max-width:760px){
+  .upcard{
+    grid-template-columns:auto 1fr;
+    align-items:start;
+    gap:clamp(14px,3.4vw,20px);
+  }
+  .upcard__media{grid-area:1 / 1 / 2 / 3;aspect-ratio:16/9;min-height:0}
+  .upcard__when{grid-area:2 / 1 / 3 / 2;text-align:left;padding-top:2px}
+  .upcard__body{grid-area:2 / 2 / 3 / 3}
+  .upcard__day{font-size:clamp(2rem,9vw,2.75rem)}
+}
+@media (max-width:420px){
+  .upcard__cta .btn{width:100%}
 }

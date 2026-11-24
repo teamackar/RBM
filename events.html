@@ -15,7 +15,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/styles.css?v=10">
+<link rel="stylesheet" href="css/styles.css?v=12">
 <script>document.documentElement.classList.add("js")</script>
 </head>
 
@@ -94,48 +94,9 @@
       Brand launches, showcase evenings and the twenty days a year the whole
       floor runs full — across Raipur, Bilaspur and Jagdalpur.
     </p>
-    <a class="phero__cue reveal" href="#what">
+    <a class="phero__cue reveal" href="#fayde">
       Scroll down to explore <span aria-hidden="true">&darr;</span>
     </a>
-  </div>
-</section>
-
-<!-- ══════════════ What the evenings are ═══════════════════ -->
-<section class="escatter" id="what">
-  <div class="container">
-    <div class="escatter__grid">
-
-      <p class="escatter__note escatter__note--a reveal">
-        A launch is the first time a brand's work stands in front of the
-        people who will specify it. We give it the floor, the light and
-        an evening, and the brand sends its own people to walk the room.
-      </p>
-
-      <figure class="escatter__shot escatter__shot--a reveal">
-        <img src="assets/6-events/web/team-01.webp"
-             alt="The Rathi's Build Mart team gathered in front of a branded backdrop at a store event."
-             width="900" height="507" loading="lazy" decoding="async">
-      </figure>
-
-      <figure class="escatter__shot escatter__shot--lead reveal">
-        <img src="assets/6-events/web/fima-02.webp"
-             alt="Guests gathered around a bath display during a launch evening in the Raipur store."
-             width="900" height="1350" loading="lazy" decoding="async">
-      </figure>
-
-      <figure class="escatter__shot escatter__shot--b reveal">
-        <img src="assets/6-events/web/nexion-01.webp"
-             alt="A ribbon being cut in front of large surface samples at a showcase evening."
-             width="900" height="600" loading="lazy" decoding="async">
-      </figure>
-
-      <p class="escatter__note escatter__note--b reveal">
-        Architects, contractors and families come through the same doors.
-        The evenings are built so all three end up in one
-        conversation — over a full-size sample, not a catalogue page.
-      </p>
-
-    </div>
   </div>
 </section>
 
@@ -168,47 +129,56 @@
         ours while it does.
       </p>
 
+      <!-- One set in the markup; main.js clones it as many
+           times as the screen is wide enough to need, so the
+           run can travel a set's width and land back on
+           identical ground. With no script it stays a single
+           set the reader pushes by hand. -->
       <div class="efan reveal" data-fan>
-        <figure class="efan__item">
-          <img src="assets/6-events/web/fayde-01.webp"
-               alt="Three men talking in the surfaces aisle beside a Fayde Ke 20 Din standee."
-               width="900" height="600" loading="lazy" decoding="async">
-        </figure>
-        <figure class="efan__item">
-          <img src="assets/6-events/web/fayde-02.webp"
-               alt="Customers looking along a lit corridor of tile and slab displays."
-               width="900" height="600" loading="lazy" decoding="async">
-        </figure>
-        <figure class="efan__item">
-          <img src="assets/6-events/web/fayde-03.webp"
-               alt="Staff and visitors on the floor during the campaign."
-               width="900" height="600" loading="lazy" decoding="async">
-        </figure>
-        <figure class="efan__item">
-          <img src="assets/6-events/web/fayde-04.webp"
-               alt="A sample being handed across a display plinth."
-               width="900" height="600" loading="lazy" decoding="async">
-        </figure>
-        <figure class="efan__item">
-          <img src="assets/6-events/web/fayde-05.webp"
-               alt="Visitors walking the surfaces display during the campaign."
-               width="900" height="600" loading="lazy" decoding="async">
-        </figure>
-        <figure class="efan__item">
-          <img src="assets/6-events/web/fayde-06.webp"
-               alt="A consultant explaining a finish to two customers."
-               width="900" height="600" loading="lazy" decoding="async">
-        </figure>
-        <figure class="efan__item">
-          <img src="assets/6-events/web/fayde-07.webp"
-               alt="The bath display with campaign signage in the foreground."
-               width="900" height="600" loading="lazy" decoding="async">
-        </figure>
-        <figure class="efan__item">
-          <img src="assets/6-events/web/fayde-08.webp"
-               alt="Staff photographing a tap on display beside the campaign board."
-               width="900" height="600" loading="lazy" decoding="async">
-        </figure>
+        <div class="efan__track">
+          <div class="efan__set" data-fan-set>
+            <figure class="efan__item">
+              <img src="assets/6-events/web/fayde-01.webp"
+                   alt="Three men talking in the surfaces aisle beside a Fayde Ke 20 Din standee."
+                   width="900" height="600" decoding="async">
+            </figure>
+            <figure class="efan__item">
+              <img src="assets/6-events/web/fayde-02.webp"
+                   alt="Customers looking along a lit corridor of tile and slab displays."
+                   width="900" height="600" decoding="async">
+            </figure>
+            <figure class="efan__item">
+              <img src="assets/6-events/web/fayde-03.webp"
+                   alt="Staff and visitors on the floor during the campaign."
+                   width="900" height="600" decoding="async">
+            </figure>
+            <figure class="efan__item">
+              <img src="assets/6-events/web/fayde-04.webp"
+                   alt="A sample being handed across a display plinth."
+                   width="900" height="600" decoding="async">
+            </figure>
+            <figure class="efan__item">
+              <img src="assets/6-events/web/fayde-05.webp"
+                   alt="Visitors walking the surfaces display during the campaign."
+                   width="900" height="600" decoding="async">
+            </figure>
+            <figure class="efan__item">
+              <img src="assets/6-events/web/fayde-06.webp"
+                   alt="A consultant explaining a finish to two customers."
+                   width="900" height="600" decoding="async">
+            </figure>
+            <figure class="efan__item">
+              <img src="assets/6-events/web/fayde-07.webp"
+                   alt="The bath display with campaign signage in the foreground."
+                   width="900" height="600" decoding="async">
+            </figure>
+            <figure class="efan__item">
+              <img src="assets/6-events/web/fayde-08.webp"
+                   alt="Staff photographing a tap on display beside the campaign board."
+                   width="900" height="600" decoding="async">
+            </figure>
+          </div>
+        </div>
       </div>
     </article>
 
@@ -415,6 +385,6 @@
 
 </main>
 
-<script src="js/main.js" defer></script>
+<script src="js/main.js?v=12" defer></script>
 </body>
 </html>

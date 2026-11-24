@@ -47,6 +47,14 @@
   --dur:.42s;
   --dur-fast:.2s;
   --dur-switch:1.5s;
+  /* A panel or a card opening is a much longer travel than the UI
+     movements --ease is tuned for: that curve puts ~25% of the
+     distance in the first frame, which reads as a snap. This one
+     spends its time in the middle of the move instead, so the box
+     grows rather than jumps. Shared by the product panels on the
+     home page and the brand cards. */
+  --dur-open:1s;
+  --ease-open:cubic-bezier(.32,.06,.22,1);
 
   /* Layout */
   /* Holds at 1240 up to roughly a 1440 screen — a MacBook at
@@ -1180,13 +1188,8 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .cat__cta{margin-top:clamp(26px,3.6vw,44px)}
 
 /* ── Expanding option panels ───────────────────────────── */
-/* A panel opening is a much longer travel than the UI movements
-   --ease is tuned for: that curve puts ~25% of the distance in the
-   first frame, which reads as a snap. These spend time in the middle
-   of the move instead, so the photo grows rather than jumps. */
+/* The opening curve is --ease-open, in the root block. */
 .opts{
-  --dur-open:1s;
-  --ease-open:cubic-bezier(.32,.06,.22,1);
   --grow-open:2.6;
   --grow-shut:.88;
   display:flex;gap:clamp(12px,1.6vw,20px);
@@ -1411,139 +1414,270 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 }
 .btabs--row .btab[aria-selected="true"]::before{height:1px;transform:scaleX(1)}
 
-/* ── Brand entries ─────────────────────────────────────── */
-.blist{margin-top:clamp(36px,5vw,60px)}
-
-.bentry{
-  display:grid;
-  grid-template-columns:minmax(0,1fr) minmax(0,1fr);
-  align-items:center;
-  gap:clamp(26px,4.5vw,72px);
-  padding-block:clamp(34px,5vw,58px);
+/* ── Brand cards ───────────────────────────────────────── */
+/* A flex grid of equal cards. Hovering one widens it inside its own
+   row and narrows its row-mates by exactly as much, so the row keeps
+   its width and nothing below it moves. The widths are handed to the
+   cards as flex-basis by brands.js, which works out row membership
+   from the visible order — filtering changes who shares a row. */
+.bgrid{
+  --cols:4;
+  --rowmode:1;                       /* 1 = widen sideways, 0 = stack */
+  --gap:clamp(12px,1.6vw,26px);
+  --bw:calc((100% - (var(--cols) - 1) * var(--gap)) / var(--cols));
+  --bcard-h:clamp(252px,22vw,304px);
+  --bcard-pad:clamp(16px,1.7vw,26px);
+  --bcard-logo:clamp(80px,8vw,102px);
+  /* The cards open on their own beat: straight and quick, not the
+     long eased travel the home page's option panels use. */
+  --dur-card:.26s;
+  --ease-card:linear;
+  display:flex;flex-wrap:wrap;
+  gap:var(--gap);
+  margin-top:clamp(36px,5vw,60px);
 }
-/* Alternating sides. The class is set from the visible order in
-   brands.js, not by :nth-child — filtering removes rows, and
-   nth-child would then stack two images down one edge. */
-.bentry--flip .bentry__copy{order:2;text-align:right}
-.bentry--flip .bentry__desc{margin-left:auto}
+/* .bgrid sets display, which would otherwise outrank the UA's
+   [hidden] rule when a department has nothing in it. */
+.bgrid[hidden]{display:none}
 
-.bentry__name{
-  font-family:var(--font-display);font-weight:400;
-  font-size:clamp(1.5rem,2.9vw,2.25rem);
-  line-height:1.15;letter-spacing:-.01em;
-}
-.bentry__desc{
-  margin-top:clamp(14px,1.8vw,20px);max-width:46ch;
-  font-size:.9375rem;font-weight:300;line-height:1.7;
-  color:var(--ink-muted);
-  text-wrap:pretty;
-}
-
-.bentry__media{
-  position:relative;margin:0;
-  aspect-ratio:64/30;
-  border-radius:var(--radius-sm);
+.bcard{
+  position:relative;
+  flex:0 0 var(--bw);
+  height:var(--bcard-h);
+  margin:0;
+  border-radius:var(--radius);
   overflow:hidden;
   background:var(--graphite);
+  isolation:isolate;
 }
-.bentry__photo{
+/* Two classes deep on purpose, the same trap the option panels hit:
+   every card also carries .reveal, and `.js .reveal` (0,2,0) outranks
+   a bare `.bcard` (0,1,0). Its transition list would replace this one
+   wholesale and the box would snap to its open width while the
+   wordmark and the copy animated around it. This matches that weight
+   and restates the reveal's own properties. */
+.bgrid .bcard{
+  transition:
+    flex-basis var(--dur-card) var(--ease-card),
+    box-shadow var(--dur-card) var(--ease-card),
+    opacity .7s var(--ease),
+    transform .7s var(--ease);
+}
+/* House brands keep the bronze hairline the old panels carried. */
+.bcard--inhouse{box-shadow:0 0 0 1px rgba(208,182,139,.44) inset}
+.bcard.is-open{box-shadow:0 30px 64px -40px rgba(0,0,0,.95)}
+.bcard--inhouse.is-open{box-shadow:0 0 0 1px rgba(208,182,139,.6) inset,0 30px 64px -40px rgba(0,0,0,.95)}
+
+.bcard__photo{
+  position:absolute;inset:0;z-index:0;
   width:100%;height:100%;object-fit:cover;
-  transition:transform .8s var(--ease);
+  transition:transform var(--dur-card) var(--ease-card);
 }
-/* The photos are lit for themselves, so the wordmark needs its own
-   ground: a centred pool of shade rather than a flat scrim. */
-.bentry__veil{
-  position:absolute;inset:0;
+.bcard.is-open .bcard__photo{transform:scale(1.03)}
+
+/* The photos are lit for themselves, so the mark needs its own
+   ground: a pool of shade under the logo while the card is closed,
+   swinging to a left-weighted wash once the copy is out. */
+.bcard__veil{
+  position:absolute;inset:0;z-index:1;
   background:
-    radial-gradient(62% 72% at 50% 50%,rgba(23,22,25,.58) 0%,rgba(23,22,25,.22) 62%,rgba(23,22,25,0) 100%),
-    linear-gradient(to bottom,rgba(23,22,25,.2),rgba(23,22,25,.3));
+    radial-gradient(74% 62% at 50% 44%,rgba(23,22,25,.68) 0%,rgba(23,22,25,.34) 62%,rgba(23,22,25,.12) 100%),
+    linear-gradient(to bottom,rgba(23,22,25,.26),rgba(23,22,25,.42));
 }
-/* Supplied at 160px wide with transparent padding — rendered at
-   roughly 1:1 so the mark stays crisp rather than upscaled. */
-.bentry__logo{
-  position:absolute;top:50%;left:50%;translate:-50% -50%;
-  width:clamp(132px,15vw,176px);height:auto;
-  object-fit:contain;
-  filter:drop-shadow(0 2px 14px rgba(0,0,0,.45));
-  transition:opacity var(--dur) var(--ease);
+.bcard__veil::after{
+  content:"";position:absolute;inset:0;
+  background:
+    linear-gradient(104deg,rgba(23,22,25,.88) 0%,rgba(23,22,25,.74) 46%,rgba(23,22,25,.42) 100%);
+  opacity:0;transition:opacity var(--dur-card) var(--ease-card);
 }
-@media (hover:hover){
-  .bentry__media:hover .bentry__photo{transform:scale(1.035)}
+.bcard.is-open .bcard__veil::after{opacity:1}
+
+.bcard__inner{position:absolute;inset:0;z-index:2}
+
+/* No plate behind it — the wordmarks are transparent PNGs and sit
+   straight on the photograph. Closed they are centred; open they
+   travel to the top-left corner and the copy fills in beneath. */
+.bcard__logo{
+  position:absolute;
+  left:50%;top:50%;translate:-50% -50%;
+  width:var(--bcard-logo);height:calc(var(--bcard-logo) * .58);
+  object-fit:contain;object-position:center;
+  filter:drop-shadow(0 2px 14px rgba(0,0,0,.55));
+  transition:left var(--dur-card) var(--ease-card),
+             top var(--dur-card) var(--ease-card),
+             translate var(--dur-card) var(--ease-card),
+             width var(--dur-card) var(--ease-card);
+}
+.bcard.is-open .bcard__logo{
+  left:var(--bcard-pad);top:var(--bcard-pad);translate:0 0;
 }
 
-/* Dealer status. A tagged brand takes the whole row: the entry sits
-   in its own panel, bronze for a house brand and silver for one we are
-   a certified partner for. The panel bleeds outward by its own padding,
-   so the picture and the copy stay on the same lines as every other
-   row on the page. */
-.bentry--tagged{
-  --panel-pad:clamp(14px,1.8vw,26px);
-  position:relative;
-  margin-block:clamp(14px,2vw,22px);
-  margin-inline:calc(var(--panel-pad) * -1);
-  padding:var(--panel-pad);
-  border-radius:calc(var(--radius) + 6px);
-  border:1px solid;
+.bcard__id{
+  position:absolute;
+  left:calc(var(--bcard-pad) + var(--bcard-logo) + clamp(14px,1.6vw,24px));
+  right:var(--bcard-pad);
+  top:var(--bcard-pad);
+  text-align:left;
+  /* Faded, not hidden: a closed card shows only its wordmark, but the
+     name stays in the accessibility tree and in the page's text. */
+  opacity:0;
+  transition:opacity .1s linear;
 }
-.bentry--inhouse{
-  border-color:rgba(208,182,139,.42);
-  background:
-    linear-gradient(104deg,rgba(138,101,70,.2) 0%,rgba(138,101,70,.07) 46%,rgba(23,22,25,0) 82%),
-    rgba(229,228,226,.025);
-  box-shadow:0 26px 60px -42px rgba(138,101,70,.75);
+/* Held until the mark has most of the way to the corner, so the name
+   does not appear underneath it mid-travel. Closing has no delay —
+   the base rule above — so the card goes back in one piece. */
+.bcard.is-open .bcard__id{opacity:1;transition:opacity .14s .12s linear}
+.bcard__name{
+  font-family:var(--font-display);font-weight:400;
+  font-size:clamp(1.0625rem,1.45vw,1.3125rem);
+  line-height:1.2;letter-spacing:-.01em;
+  overflow-wrap:break-word;
 }
-.bentry--partner{
-  border-color:rgba(229,228,226,.3);
-  background:
-    linear-gradient(104deg,rgba(196,199,204,.13) 0%,rgba(196,199,204,.05) 46%,rgba(23,22,25,0) 82%),
-    rgba(229,228,226,.02);
-  box-shadow:0 26px 60px -42px rgba(0,0,0,.9);
+.bcard__meta{
+  position:absolute;left:0;top:calc(100% + 5px);
+  white-space:nowrap;text-align:left;
+  font-size:.75rem;font-weight:300;line-height:1.4;
+  letter-spacing:.035em;color:var(--ink-muted);
+  opacity:0;transition:opacity .22s var(--ease);
 }
+/* Held back until the box has most of its width: the copy arrives
+   behind the opening, rather than landing on top of it. */
+.bcard.is-open .bcard__meta{opacity:1;transition:opacity .14s .14s linear}
 
-/* Dealer badge, sitting on the picture. */
-.bentry__badge{
-  position:absolute;top:clamp(12px,1.4vw,18px);right:clamp(12px,1.4vw,18px);
-  padding:7px 15px;
-  border-radius:8px;
-  font-size:.6875rem;font-weight:600;line-height:1.2;
-  letter-spacing:.11em;text-transform:uppercase;white-space:nowrap;
-  -webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);
-  box-shadow:0 10px 26px -14px rgba(0,0,0,.9);
+/* The write-up and the way through to the department. Hidden rather
+   than merely faded, so the link stays out of the tab order and the
+   text out of the accessibility tree until the card is open. */
+.bcard__body{
+  position:absolute;
+  left:var(--bcard-pad);right:var(--bcard-pad);bottom:var(--bcard-pad);
+  opacity:0;visibility:hidden;pointer-events:none;
+  transform:translateY(10px);
+  transition:opacity .12s linear,transform .12s linear,
+             visibility 0s .12s;
 }
-.bentry__badge--inhouse{
+.bcard.is-open .bcard__body{
+  opacity:1;visibility:visible;transform:none;
+  transition:opacity .16s .16s linear,transform .16s .16s linear,
+             visibility 0s;
+}
+/* The card is a fixed height and clips, so the write-up is given a
+   hard ceiling: in the narrowest row a card can open to, five lines
+   is the most that fits above the link. Every brand's copy sits
+   inside that, so the clamp is a backstop rather than a trim. */
+.bcard__desc{
+  max-width:64ch;
+  font-size:clamp(.8125rem,.95vw,.875rem);
+  font-weight:300;line-height:1.62;color:var(--ink-muted);
+  text-wrap:pretty;
+  display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:5;
+  overflow:hidden;
+}
+@media (max-width:760px){
+  .bcard__desc{-webkit-line-clamp:none;overflow:visible;display:block}
+}
+.bcard__cta{
+  display:inline-flex;align-items:center;gap:8px;
+  margin-top:clamp(10px,1.2vw,16px);
+  font-size:.8125rem;font-weight:500;letter-spacing:.04em;
+  color:var(--ink);pointer-events:auto;
+  border-bottom:1px solid rgba(229,228,226,.28);padding-bottom:3px;
+  transition:color var(--dur-fast) var(--ease),border-color var(--dur-fast) var(--ease);
+}
+.bcard__cta span{transition:transform var(--dur-fast) var(--ease)}
+.bcard__cta:hover{color:var(--champagne);border-color:rgba(208,182,139,.6)}
+.bcard__cta:hover span{transform:translateX(4px)}
+
+/* House-brand mark. It comes off the narrowed cards, where there is
+   no room for it to sit without crossing the wordmark. */
+.bcard__badge{
+  position:absolute;z-index:4;
+  top:clamp(10px,1.1vw,14px);right:clamp(10px,1.1vw,14px);
+  padding:5px 11px;border-radius:7px;
+  font-size:.625rem;font-weight:600;line-height:1.2;
+  letter-spacing:.1em;text-transform:uppercase;white-space:nowrap;
   color:#FBF4EC;
   background:rgba(138,101,70,.84);
   border:1px solid rgba(208,182,139,.46);
-}
-.bentry__badge--partner{
-  color:#F4F4F3;
-  background:rgba(128,130,134,.62);
-  border:1px solid rgba(229,228,226,.42);
+  -webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);
+  transition:opacity var(--dur) var(--ease);
 }
 
-/* Switching department: the picture, the wordmark, the badge and the
-   copy all come in over 600ms on the same ease-out curve. */
-.bentry--enter .bentry__photo{animation:bentry-photo var(--dur-switch) var(--ease) both}
-.bentry--enter .bentry__logo,
-.bentry--enter .bentry__badge,
-.bentry--enter .bentry__name,
-.bentry--enter .bentry__desc{animation:bentry-rise var(--dur-switch) var(--ease) both}
-/* The wordmark is centred with `translate`, which composes with the
-   `transform` the keyframe animates — the two do not fight. */
-@keyframes bentry-photo{
+/* The whole card is the control. It sits under .bcard__body so the
+   "View products" link inside an open card is still clickable. */
+.bcard__toggle{
+  position:absolute;inset:0;z-index:3;
+  width:100%;height:100%;padding:0;
+  border:0;background:transparent;color:inherit;
+  cursor:pointer;
+}
+.bcard__toggle:focus-visible{
+  outline:2px solid var(--champagne);outline-offset:-5px;
+  border-radius:var(--radius);
+}
+.bcard__body{z-index:4}
+
+.u-sr{
+  position:absolute;width:1px;height:1px;
+  margin:-1px;padding:0;overflow:hidden;
+  clip-path:inset(50%);white-space:nowrap;border:0;
+}
+
+/* Squeezed by a neighbour: the wordmark shrinks a little and the
+   badge steps out, so the card still reads at a sliver wide. */
+.bcard.is-narrow{--bcard-logo:clamp(62px,6vw,80px)}
+.bcard.is-narrow .bcard__badge{opacity:0}
+
+/* Switching department: the picture and the content come in together
+   on the same ease-out curve the rest of the site uses. */
+.bcard--enter .bcard__photo{animation:bcard-photo var(--dur-switch) var(--ease) both}
+.bcard--enter .bcard__logo,
+.bcard--enter .bcard__badge{animation:bcard-rise var(--dur-switch) var(--ease) both}
+@keyframes bcard-photo{
   from{opacity:0;transform:scale(1.06)}
   to{opacity:1;transform:none}
 }
-@keyframes bentry-rise{
-  from{opacity:0;transform:translateY(12px)}
-  to{opacity:1;transform:none}
+@keyframes bcard-rise{
+  from{opacity:0}
+  to{opacity:1}
 }
+
+@media (max-width:1180px){
+  .bgrid{--cols:3}
+}
+
+/* Two up, and the expansion goes downward instead of sideways: there
+   is no width to borrow from a neighbour on a phone. The open card
+   takes the full row and its content drops into normal flow, so the
+   card grows as tall as the write-up needs. */
+@media (max-width:760px){
+  .bgrid{--cols:2;--rowmode:0;--bcard-h:clamp(188px,44vw,232px)}
+
+  .bcard.is-open{flex-basis:100%;height:auto}
+  .bcard.is-open .bcard__inner{
+    position:relative;inset:auto;
+    display:flex;flex-direction:column;align-items:flex-start;
+    gap:12px;padding:var(--bcard-pad);
+  }
+  .bcard.is-open .bcard__logo,
+  .bcard.is-open .bcard__id,
+  .bcard.is-open .bcard__meta,
+  .bcard.is-open .bcard__body{
+    position:static;inset:auto;translate:none;transform:none;
+    text-align:left;max-width:none;white-space:normal;
+  }
+  .bcard.is-open .bcard__meta{margin-top:5px}
+  .bcard.is-open .bcard__id{margin-top:2px}
+  .bcard.is-open .bcard__veil::after{
+    background:linear-gradient(to bottom,rgba(23,22,25,.72),rgba(23,22,25,.9));
+  }
+}
+
 @media (prefers-reduced-motion:reduce){
-  .bentry--enter .bentry__photo,
-  .bentry--enter .bentry__logo,
-  .bentry--enter .bentry__badge,
-  .bentry--enter .bentry__name,
-  .bentry--enter .bentry__desc{animation:none}
+  .bcard,.bcard__logo,.bcard__id,.bcard__name,.bcard__photo,
+  .bcard__body,.bcard__meta,.bcard__veil::after{transition:none}
+  .bcard--enter .bcard__photo,
+  .bcard--enter .bcard__logo,
+  .bcard--enter .bcard__badge{animation:none}
 }
 
 .blist__empty{
@@ -1563,16 +1697,6 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
   .btabs--row .btab{padding:10px 16px}
   .btabs--row .btab::before{display:none}
 
-  .bentry{
-    grid-template-columns:1fr;
-    gap:20px;
-    padding-block:clamp(28px,6vw,40px);
-  }
-  .bentry--tagged{margin-inline:0;padding:var(--panel-pad)}
-  /* One column: the picture leads, the copy reads left. */
-  .bentry__copy{order:2 !important;text-align:left !important}
-  .bentry__media{order:1;aspect-ratio:16/9}
-  .bentry__desc{margin-left:0 !important;max-width:none}
 }
 
 
@@ -2150,54 +2274,6 @@ body{
   to{transform:translate3d(-50%,0,0)}
 }
 
-/* ── Scatter: what the evenings are ────────────────────── */
-/* Five tiles on a twelve-column grid, deliberately off the
-   centre line: two columns of copy pinned to opposite corners
-   with the photographs falling between them. */
-.escatter{padding-block:clamp(54px,8vh,94px) clamp(34px,5vh,64px)}
-.escatter__grid{
-  display:grid;
-  grid-template-columns:repeat(12,1fr);
-  gap:clamp(16px,2.2vw,30px);
-}
-.escatter__note{
-  align-self:start;
-  font-size:clamp(.875rem,1.15vw,.9375rem);
-  font-weight:300;line-height:1.75;color:var(--ink-muted);
-  text-wrap:pretty;
-}
-.escatter__note strong{font-weight:500;color:var(--ink)}
-.escatter__shot{margin:0;overflow:hidden;border-radius:var(--radius-sm)}
-.escatter__shot img{width:100%;height:100%;object-fit:cover}
-.escatter__shot--lead{border-radius:var(--radius)}
-
-/* Two rows. The copy sits in the outer columns — the first
-   block ranged left at the top, the second ranged right at
-   the bottom, against the outside margin in both cases — with
-   the lead plate down the middle spanning both. The small
-   frames are deliberately small: in the design they are notes
-   beside the plate, not rivals to it. */
-@media (min-width:861px){
-  .escatter__grid{align-items:start}
-  .escatter__note--a   {grid-area:1 /  1 / 2 /  6}
-  .escatter__shot--lead{grid-area:1 /  6 / 3 / 10;aspect-ratio:9/10}
-  .escatter__shot--a   {grid-area:1 / 11 / 2 / 13;aspect-ratio:11/5}
-  .escatter__shot--b   {grid-area:2 /  1 / 3 /  3;aspect-ratio:19/10;align-self:end}
-  .escatter__note--b   {grid-area:2 / 10 / 3 / 13;text-align:right;align-self:end}
-}
-
-/* Stacked, but the two small frames stay paired on one line:
-   left to wrap on their own they each take a column and leave
-   the other half of the row empty. */
-@media (max-width:860px){
-  .escatter__grid{grid-template-columns:1fr 1fr;gap:clamp(14px,3vw,20px)}
-  .escatter__note--a   {grid-area:1 / 1 / 2 / 3}
-  .escatter__shot--lead{grid-area:2 / 1 / 3 / 3;aspect-ratio:4/3;height:auto}
-  .escatter__shot--a   {grid-area:3 / 1 / 4 / 2;aspect-ratio:1/1}
-  .escatter__shot--b   {grid-area:3 / 2 / 4 / 3;aspect-ratio:1/1}
-  .escatter__note--b   {grid-area:4 / 1 / 5 / 3}
-}
-
 /* ── Lead event: the campaign ──────────────────────────── */
 /* Fayde Ke 20 Din is the campaign of the year rather than a
    brand launch, so it takes the centred treatment and the
@@ -2242,26 +2318,53 @@ body{
 }
 
 /* ── The fan ───────────────────────────────────────────── */
-/* One row, bled past both edges and set on a shallow curve.
-   The outer frames stand nearer the reader and are keystoned
-   by the perspective, so the run reads as bent around them
-   rather than laid flat on the page — which is also what
-   lets both ends run off the screen without a hard edge. */
+/* One row, bled past both edges, set on a shallow curve and
+   turning without stopping. The frames travel right to left
+   through the arc, and because the set is doubled the run has
+   no first or last frame: it reads as a circle of photographs
+   seen side-on, coming round again.
+
+   Two things are kept apart deliberately. The travel is one
+   transform on the track, so no part of the page relayouts as
+   it moves; the keystone is a transform on each frame, written
+   by main.js from where that frame has got to. The curve
+   therefore stays where it is on the screen while the
+   photographs pass through it. */
 .efan{
   margin-top:clamp(26px,4vw,50px);
   margin-inline:calc(50% - 50vw);
-  display:flex;align-items:center;
-  gap:clamp(10px,1.9vw,28px);
   padding-block:clamp(16px,2.6vw,38px);
-  /* Pushed by hand. main.js opens it on the middle of the run
-     so both outer frames start off the edges, as in the
-     design; with no script it simply begins at the first. */
+  /* The hand-pushed state, and what a page without script,
+     with reduced motion or on a metered connection keeps:
+     a plain scroller. `is-orbit` hands it to the loop. */
   overflow-x:auto;overflow-y:hidden;
   scrollbar-width:none;
   overscroll-behavior-x:contain;
-  scroll-behavior:auto;
 }
 .efan::-webkit-scrollbar{display:none}
+
+/* The track holds the sets; each set holds the frames. Both
+   are flex, but only the set carries the gap — the space
+   between one set and the next is the set's own trailing
+   padding instead. A set is therefore exactly the distance
+   the loop returns by, and the seam between one copy and the
+   next falls on a gap indistinguishable from the other
+   seven. */
+.efan__track{display:flex;align-items:center;width:max-content}
+.efan__set{
+  --ef-gap:clamp(10px,1.9vw,28px);
+  display:flex;align-items:center;
+  gap:var(--ef-gap);padding-right:var(--ef-gap);
+}
+
+/* Under the loop the strip is driven rather than scrolled, so
+   native scrolling is taken away — the two would fight — and
+   the strip can be dragged instead. `pan-y` leaves the page's
+   own vertical scroll alone on a touch screen. */
+.efan.is-orbit{overflow:hidden;cursor:grab;touch-action:pan-y}
+.efan.is-orbit.is-held{cursor:grabbing}
+.efan.is-orbit .efan__track{will-change:transform}
+
 .efan__item{
   flex:0 0 auto;margin:0;
   width:clamp(150px,23.5vw,348px);
@@ -2279,13 +2382,11 @@ body{
 .efan__item img{width:100%;height:100%;object-fit:cover}
 
 /* --ry and --sc are written by main.js from each frame's
-   distance to the middle of the run, so the curve follows the
-   scroll instead of being pinned to the first five frames.
-   Unset, every frame is simply flat. */
+   distance to the middle of the run. Unset, every frame is
+   simply flat. */
 
 /* Narrower frames on a phone, so more than one is in view. */
 @media (max-width:760px){
-  .efan{padding-inline:var(--gutter)}
   .efan__item{width:clamp(150px,56vw,240px)}
 }
 

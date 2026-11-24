@@ -522,45 +522,70 @@
     });
   }());
 
-  /* ── Curved fan ─────────────────────────────────────────
-     The campaign's run of photographs is a scroller, so the
-     curve has to travel with it: each frame is turned and
-     enlarged by how far its middle sits from the middle of
-     the run, which keeps whichever frame is under the eye the
-     flat one and the frames at either edge the most turned.
+  /* ── The turning fan ───────────────────────────────────
+     The campaign's photographs go round without stopping, so
+     there are two jobs here and they are kept apart.
 
-     Pinning the angles to the first five frames in CSS would
-     have been cheaper, but the curve would then slide off as
-     soon as the reader pushed the strip along.             */
+     The travel is one transform on the track. The set is
+     cloned until the track is wider than the screen plus the
+     distance it returns by, the track is moved left, and the
+     moment it has gone one set's width that distance is put
+     back to where it began — the content under the eye is
+     identical either side of the reset, so the run has no
+     seam and no end.
+
+     The curve is a transform on each frame, turned and
+     enlarged by how far that frame's middle now sits from the
+     middle of the run. Writing it per frame rather than per
+     position is what keeps the arc still on the screen while
+     the photographs travel through it: whichever frame is
+     under the eye is the flat one, and the frames at either
+     edge are the most turned. Both ends of the run are off
+     the screen, so neither reset nor curve has a visible
+     edge to give it away.
+
+     Frame offsets are read once from layout — offsetLeft and
+     offsetWidth, which the frames' own transforms do not
+     touch — so each animation frame only writes. Off-screen
+     the loop stops altogether.
+
+     Reduced motion, a metered connection or no script at all
+     leaves the strip as the scroller the CSS makes it, opened
+     on the middle of the run and pushed by hand.          */
   (function fan() {
     var rails = document.querySelectorAll('[data-fan]');
     if (!rails.length) return;
 
     Array.prototype.forEach.call(rails, function (rail) {
+      var track = rail.querySelector('.efan__track');
+      var set = rail.querySelector('[data-fan-set]');
+      if (!track || !set || !set.children.length) return;
+
+      if (reduceMotion || saveData) {
+        pushed(rail);
+        return;
+      }
+      turning(rail, track, set);
+    });
+
+    /* The hand-pushed strip: centred, and curved from each
+       frame's measured position as the reader scrolls it. */
+    function pushed(rail) {
       var items = rail.querySelectorAll('.efan__item');
-      if (!items.length) return;
-
-      // Open on the middle of the run, both ends already off
-      // the edges. Worth doing even when the curve is not:
-      // it is the framing the design asks for.
-      rail.scrollLeft = (rail.scrollWidth - rail.clientWidth) / 2;
-      if (reduceMotion) return;
-
       var queued = false;
+
+      function centre() {
+        rail.scrollLeft = (rail.scrollWidth - rail.clientWidth) / 2;
+      }
 
       function paint() {
         queued = false;
         var box = rail.getBoundingClientRect();
         var mid = box.left + box.width / 2;
         var reach = box.width / 2 || 1;
-
         for (var i = 0; i < items.length; i++) {
           var r = items[i].getBoundingClientRect();
-          // -1 at the left edge of the run, +1 at the right.
-          var d = ((r.left + r.width / 2) - mid) / reach;
-          if (d < -1.5) d = -1.5; else if (d > 1.5) d = 1.5;
-          items[i].style.setProperty('--ry', (-d * 20).toFixed(2) + 'deg');
-          items[i].style.setProperty('--sc', (1 + Math.abs(d) * 0.17).toFixed(3));
+          curve(items[i], ((r.left + r.width / 2) - mid) / reach);
         }
       }
 
@@ -571,15 +596,176 @@
       }
 
       rail.addEventListener('scroll', request, { passive: true });
-      window.addEventListener('resize', function () {
-        // Frame widths follow the viewport, so the run is
-        // re-centred before it is re-drawn.
-        rail.scrollLeft = (rail.scrollWidth - rail.clientWidth) / 2;
-        request();
-      });
-      window.addEventListener('load', request);
+      window.addEventListener('resize', function () { centre(); request(); });
+      window.addEventListener('load', function () { centre(); request(); });
+      centre();
       paint();
-    });
+    }
+
+    /* The loop. */
+    function turning(rail, track, set) {
+      rail.classList.add('is-orbit');
+
+      var items = [];
+      var SPEED = 34;                 // pixels a second, left
+      var x = 0;                      // how far the track has travelled
+      var step = 0;                   // one set: the distance it returns by
+      var lead = 0;                   // one frame, held off the left edge
+      var base = 0;                   // the track's left edge at rest
+      var mid = 0, reach = 1;
+      var offs = [], halves = [];
+      var running = false, last = 0;
+      var held = false, grabbed = 0;
+
+      // Copies are decoration: off the accessibility tree, out
+      // of the tab order, and not cloning targets themselves.
+      function copy() {
+        var dupe = set.cloneNode(true);
+        dupe.setAttribute('aria-hidden', 'true');
+        dupe.removeAttribute('data-fan-set');
+        Array.prototype.forEach.call(dupe.querySelectorAll('a,button,[tabindex]'), function (n) {
+          n.setAttribute('tabindex', '-1');
+        });
+        track.appendChild(dupe);
+      }
+
+      // The run is held back by one frame so that the point
+      // it returns to sits a frame's width off the left edge
+      // rather than against it: without that, once a cycle the
+      // first frame's own corner arrives at the edge of the
+      // screen and the loop shows its join.
+      //
+      // The track then has to stay wider than one screen plus
+      // that frame plus the distance it returns by, or the
+      // return would drag the end of the run into view. One
+      // copy covers an ordinary screen; a wide one takes as
+      // many as it needs.
+      function fill() {
+        var a = set.children[0], b = set.children[1];
+        lead = b ? b.offsetLeft - a.offsetLeft : (a ? a.offsetWidth : 0);
+        var need = rail.offsetWidth + set.offsetWidth + lead + 2;
+        var guard = 0;
+        while (track.offsetWidth < need && guard++ < 12) copy();
+        items = track.querySelectorAll('.efan__item');
+      }
+
+      function measure() {
+        // The track's resting left is read against the travel
+        // it is actually showing, before fill() can change the
+        // frame the run is held back by.
+        base = track.getBoundingClientRect().left - at();
+        fill();
+        var box = rail.getBoundingClientRect();
+        mid = box.left + box.width / 2;
+        reach = box.width / 2 || 1;
+        step = set.offsetWidth;
+        offs.length = 0;
+        halves.length = 0;
+        for (var i = 0; i < items.length; i++) {
+          // Layout geometry, so the frames' own keystones
+          // cannot feed back into the measurement.
+          offs.push(items[i].offsetLeft - track.offsetLeft);
+          halves.push(items[i].offsetWidth / 2);
+        }
+      }
+
+      // Where the track is now: the travel, less the frame it
+      // is held back by.
+      function at() { return x - lead; }
+
+      function paint() {
+        var pos = at();
+        track.style.transform = 'translate3d(' + pos.toFixed(2) + 'px,0,0)';
+        for (var i = 0; i < items.length; i++) {
+          curve(items[i], (base + pos + offs[i] + halves[i] - mid) / reach);
+        }
+      }
+
+      function frame(now) {
+        if (!running) return;
+        var dt = last ? (now - last) / 1000 : 0;
+        last = now;
+        // A tab left in the background, or a long frame, must
+        // not let the strip jump a whole set in one step.
+        if (dt > 0.05) dt = 0.05;
+
+        if (!held) x -= SPEED * dt;
+        if (step) {
+          while (x <= -step) x += step;
+          while (x > 0) x -= step;
+        }
+        paint();
+        requestAnimationFrame(frame);
+      }
+
+      function start() {
+        if (running) return;
+        running = true;
+        last = 0;
+        requestAnimationFrame(frame);
+      }
+
+      function stop() { running = false; }
+
+      // Dragging adds to the same travel the loop is writing,
+      // so letting go hands it straight back with no snap.
+      rail.addEventListener('pointerdown', function (e) {
+        if (e.pointerType === 'mouse' && e.button !== 0) return;
+        held = true;
+        grabbed = e.clientX;
+        rail.classList.add('is-held');
+        if (rail.setPointerCapture) {
+          try { rail.setPointerCapture(e.pointerId); } catch (err) {}
+        }
+      });
+      rail.addEventListener('pointermove', function (e) {
+        if (!held) return;
+        x += e.clientX - grabbed;
+        grabbed = e.clientX;
+      });
+      ['pointerup', 'pointercancel', 'pointerleave'].forEach(function (type) {
+        rail.addEventListener(type, function () {
+          held = false;
+          rail.classList.remove('is-held');
+        });
+      });
+
+      window.addEventListener('resize', function () {
+        // Frame widths follow the viewport, so the distances
+        // the loop returns by are re-read before they are used.
+        measure();
+        paint();
+      });
+      window.addEventListener('load', function () { measure(); paint(); });
+
+      if ('IntersectionObserver' in window) {
+        new IntersectionObserver(function (entries) {
+          entries.forEach(function (entry) {
+            if (entry.isIntersecting) start(); else stop();
+          });
+        }, { rootMargin: '150px 0px' }).observe(rail);
+      } else {
+        start();
+      }
+
+      document.addEventListener('visibilitychange', function () {
+        // Coming back to the tab, the clock restarts rather
+        // than counting the time away as travel.
+        last = 0;
+      });
+
+      measure();
+      paint();
+    }
+
+    /* -1 at the left edge of the run, +1 at the right, held
+       at 1.5 beyond: past that a frame is off the screen and
+       turning it further only costs. */
+    function curve(item, d) {
+      if (d < -1.5) d = -1.5; else if (d > 1.5) d = 1.5;
+      item.style.setProperty('--ry', (-d * 20).toFixed(2) + 'deg');
+      item.style.setProperty('--sc', (1 + Math.abs(d) * 0.17).toFixed(3));
+    }
   }());
 
   /* ── Reveal on scroll ──────────────────────────────────── */

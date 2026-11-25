@@ -616,6 +616,7 @@
       var offs = [], halves = [];
       var running = false, last = 0;
       var held = false, grabbed = 0;
+      var woken = false;
 
       // Copies are decoration: off the accessibility tree, out
       // of the tab order, and not cloning targets themselves.
@@ -698,7 +699,21 @@
         requestAnimationFrame(frame);
       }
 
+      // A frame held back for lazy loading is a frame that
+      // never arrives: the browser decides from where a photo
+      // sits on the screen, and these are moved by a transform
+      // it does not watch. So the first time the run comes
+      // into view, every photograph in it is asked for at
+      // once — which is also the moment they are wanted.
+      function wake() {
+        woken = true;
+        Array.prototype.forEach.call(track.querySelectorAll('img'), function (img) {
+          if (img.loading === 'lazy') img.loading = 'eager';
+        });
+      }
+
       function start() {
+        if (!woken) wake();
         if (running) return;
         running = true;
         last = 0;

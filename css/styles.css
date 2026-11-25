@@ -1427,7 +1427,7 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
   --bw:calc((100% - (var(--cols) - 1) * var(--gap)) / var(--cols));
   --bcard-h:clamp(252px,22vw,304px);
   --bcard-pad:clamp(16px,1.7vw,26px);
-  --bcard-logo:clamp(80px,8vw,102px);
+  --bcard-logo:clamp(118px,11.8vw,154px);
   /* The cards open on their own beat: straight and quick, not the
      long eased travel the home page's option panels use. */
   --dur-card:.26s;
@@ -1624,7 +1624,7 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 
 /* Squeezed by a neighbour: the wordmark shrinks a little and the
    badge steps out, so the card still reads at a sliver wide. */
-.bcard.is-narrow{--bcard-logo:clamp(62px,6vw,80px)}
+.bcard.is-narrow{--bcard-logo:clamp(84px,8.4vw,112px)}
 .bcard.is-narrow .bcard__badge{opacity:0}
 
 /* Switching department: the picture and the content come in together
@@ -2289,6 +2289,13 @@ body{
   scroll-margin-top:clamp(88px,12vh,120px);
   text-align:center;
 }
+/* On the layout where every event takes this treatment, four
+   of them run one under another. A centred name reads as the
+   top of its own page, so the air between two of them has to
+   be more than the air a single lead needs under a section's
+   own padding — otherwise the second name looks like a second
+   line of the first. */
+.elead + .elead{margin-top:clamp(104px,16vh,210px)}
 .elead__banner{padding-inline:clamp(12px,2.2vw,30px);container-type:inline-size}
 .elead__name{
   font-family:var(--font-display);font-weight:400;
@@ -2302,6 +2309,22 @@ body{
 }
 @supports (container-type:inline-size){
   .elead__name{font-size:clamp(2rem,calc(100cqw / var(--em,9)),10rem)}
+}
+
+/* Fayde Ke 20 Din is the one event with a logotype of its
+   own, so its name is set in the campaign's own artwork
+   rather than in the page's display face. The lockup is
+   portrait where a launch name is a single wide line, so it
+   is sized by height — the dimension that keeps the two
+   kinds of title reading as the same weight of gesture.
+
+   The artwork's drop shadow is black and all but vanishes
+   against this background. It is left as the campaign drew
+   it; nothing here paints over a logo. */
+.elead__mark{margin:0}
+.elead__mark img{
+  display:block;margin-inline:auto;
+  width:auto;height:clamp(184px,25vw,380px);
 }
 .elead__sub{
   margin-top:clamp(20px,3.2vw,44px);
@@ -2572,4 +2595,207 @@ body{
 }
 @media (max-width:420px){
   .upcard__cta .btn{width:100%}
+}
+
+
+/* ═══════════════════════════════════════════════════════════
+   About page
+   ═════════════════════════════════════════════════════════ */
+
+/* ── Hero ──────────────────────────────────────────────────
+   Not .phero: that one centres over a pre-darkened plate.
+   Here the storefront photograph has to stay recognisable on
+   one side while a full paragraph is read on the other, so
+   the plate is anchored right and the scrim runs across it
+   rather than sitting flat on top.                         */
+.ahero{
+  position:relative;
+  isolation:isolate;
+  display:grid;align-items:center;
+  min-height:min(92svh,860px);
+  padding-block:clamp(140px,19vh,200px) clamp(72px,11vh,120px);
+  overflow:hidden;
+}
+.ahero__media{position:absolute;inset:0;z-index:-2;background:var(--charcoal)}
+.ahero__media img{
+  width:100%;height:100%;object-fit:cover;
+  /* the signage lives on the right third of the frame */
+  object-position:72% 50%;
+}
+.ahero__scrim{
+  position:absolute;inset:0;z-index:-1;
+  background:
+    linear-gradient(to right,
+      rgba(23,22,25,.97) 0%,
+      rgba(23,22,25,.95) 30%,
+      rgba(23,22,25,.78) 52%,
+      rgba(23,22,25,.52) 72%,
+      rgba(23,22,25,.42) 100%),
+    linear-gradient(to bottom,
+      rgba(23,22,25,.72) 0%,
+      rgba(23,22,25,.3) 34%,
+      rgba(23,22,25,.34) 68%,
+      rgba(23,22,25,.72) 100%);
+}
+.ahero__body{position:relative}
+
+.ahero__title{
+  font-family:var(--font-display);font-weight:400;
+  font-size:clamp(2.9rem,7.4vw,5.5rem);
+  line-height:1.02;letter-spacing:-.02em;
+}
+/* Held well short of the plate's midpoint so the column never
+   runs over the brick, whatever the viewport. */
+.ahero__copy{
+  margin-top:clamp(24px,3.6vw,44px);
+  max-width:min(46ch,44%);
+  display:grid;gap:.9em;
+  font-size:clamp(.9375rem,1.3vw,1.0625rem);
+  font-weight:300;line-height:1.72;
+  color:rgba(229,228,226,.84);
+  text-wrap:pretty;
+}
+
+/* ── Hero social row ───────────────────────────────────── */
+.asocial{
+  display:flex;gap:clamp(10px,1.2vw,14px);
+  margin-top:clamp(30px,4.4vw,52px);
+}
+.asocial a{
+  display:grid;place-items:center;
+  width:44px;height:44px;
+  border-radius:var(--radius-sm);
+  border:1px solid rgba(208,182,139,.42);
+  color:var(--champagne);
+  transition:background var(--dur-fast) var(--ease),
+             border-color var(--dur-fast) var(--ease),
+             color var(--dur-fast) var(--ease);
+}
+.asocial a:hover{
+  background:rgba(208,182,139,.12);
+  border-color:rgba(208,182,139,.8);
+  color:var(--ivory);
+}
+
+/* ── People grids ──────────────────────────────────────── */
+.people{padding-block:clamp(64px,9.5vh,116px)}
+.people--found{padding-top:clamp(72px,11vh,132px)}
+
+.people__grid{
+  margin-top:clamp(34px,5vw,60px);
+  display:grid;
+  gap:clamp(26px,3.4vw,52px) clamp(20px,2.6vw,40px);
+}
+/* The promoters sit on a narrower measure than the full
+   container: three square plates stretched to 1500px read as
+   a banner rather than as portraits. */
+.people__grid--3{
+  grid-template-columns:repeat(3,1fr);
+  max-width:1120px;margin-inline:auto;
+}
+.people__grid--4{grid-template-columns:repeat(4,1fr)}
+
+.pcard{text-align:center}
+.pcard__media{
+  overflow:hidden;
+  border-radius:var(--radius);
+  background:var(--graphite);
+  border:1px solid var(--hairline-soft);
+}
+/* The square is set on the image, not on the frame: a
+   percentage height against a frame that is itself sized by
+   aspect-ratio has no definite box to resolve against, and
+   the portrait collapses to nothing. */
+.pcard__media img{
+  width:100%;height:auto;
+  aspect-ratio:1/1;object-fit:cover;
+  transition:transform var(--dur-open) var(--ease-open);
+}
+.pcard:hover .pcard__media img{transform:scale(1.035)}
+
+.pcard__name{
+  margin-top:clamp(16px,1.8vw,24px);
+  font-family:var(--font-display);font-weight:600;
+  font-size:clamp(1.0625rem,1.5vw,1.375rem);
+  line-height:1.25;letter-spacing:-.01em;
+}
+.pcard__role{
+  margin-top:.3em;
+  font-family:var(--font-display);font-weight:400;
+  font-size:clamp(.9375rem,1.2vw,1.125rem);
+  line-height:1.35;
+  color:rgba(208,182,139,.78);
+  text-wrap:balance;
+}
+
+@media (max-width:1000px){
+  .people__grid--4{grid-template-columns:repeat(2,1fr)}
+}
+@media (max-width:620px){
+  .people__grid--3,
+  .people__grid--4{grid-template-columns:repeat(2,1fr)}
+  .people__grid--3{max-width:none}
+}
+@media (max-width:400px){
+  .people__grid--3,
+  .people__grid--4{grid-template-columns:1fr;max-width:300px;margin-inline:auto}
+}
+
+/* ── Why choose us ─────────────────────────────────────── */
+.why{padding-block:clamp(56px,8vh,96px) clamp(88px,13vh,150px)}
+.why__lede{
+  margin:clamp(16px,2.2vw,26px) auto 0;max-width:52ch;
+  font-size:clamp(.875rem,1.15vw,.9375rem);
+  font-weight:300;line-height:1.65;
+  color:var(--ink-muted);
+  text-align:center;text-wrap:pretty;
+}
+.why__grid{
+  margin-top:clamp(44px,6.5vw,86px);
+  display:grid;grid-template-columns:repeat(4,1fr);
+  gap:clamp(28px,3.4vw,54px);
+}
+/* Left-aligned under a centred heading on purpose: four
+   ragged centred paragraphs of different lengths never settle. */
+.wcard__icon{
+  display:block;width:clamp(56px,5vw,74px);
+  color:rgba(229,228,226,.5);
+}
+.wcard__icon svg{width:100%;height:auto}
+.wcard__title{
+  margin-top:clamp(20px,2.6vw,34px);
+  font-family:var(--font-display);font-weight:600;
+  font-size:clamp(1.0625rem,1.5vw,1.375rem);
+  line-height:1.3;letter-spacing:-.01em;
+  text-wrap:balance;
+}
+.wcard__text{
+  margin-top:clamp(14px,1.6vw,20px);
+  font-size:.875rem;font-weight:300;line-height:1.75;
+  color:var(--ink-muted);
+  text-wrap:pretty;
+}
+
+@media (max-width:1000px){
+  .why__grid{grid-template-columns:repeat(2,1fr)}
+}
+@media (max-width:560px){
+  .why__grid{grid-template-columns:1fr}
+}
+
+/* ── About page, narrow ────────────────────────────────── */
+/* Below roughly a tablet the copy can no longer share the
+   frame with the photograph, so the plate drops behind the
+   whole block and the scrim turns into a flat wash. */
+@media (max-width:860px){
+  .ahero{min-height:auto;padding-block:clamp(124px,17vh,160px) clamp(56px,8vh,80px)}
+  .ahero__media img{object-position:66% 50%}
+  .ahero__scrim{
+    background:
+      linear-gradient(to bottom,
+        rgba(23,22,25,.9) 0%,
+        rgba(23,22,25,.82) 45%,
+        rgba(23,22,25,.9) 100%);
+  }
+  .ahero__copy{max-width:60ch}
 }

@@ -10,7 +10,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/styles.css?v=14">
+<link rel="stylesheet" href="css/styles.css?v=19">
 <script>document.documentElement.classList.add("js")</script>
 </head>
 
@@ -182,44 +182,94 @@
   </div>
 </section>
 
-<!-- ───────────────────── Store map ───────────────────── -->
+<!-- ───────────────────── Store map ─────────────────────
+     The map keeps Google's own colours. Every other surface on
+     this page is dark, so the plate reads as a window cut into
+     it rather than as one more panel — which suits a map, the
+     one thing here a reader checks against what they already
+     know of the road.                                     -->
 <section class="store-map-section">
   <div class="container">
-    <h2 class="store-map-title">Find us on the map</h2>
-
     <div class="store-map-grid">
+
       <div class="store-map-copy">
-        <h3 class="store-map-copy__title">Lorem ipsum dolor sit amet</h3>
-        <p>
-          Consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore
-          et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation
-          ullamco laboris nisi ut aliquip ex ea commodo consequat.
-        </p>
-        <p>
-          Duis aute irure dolor in reprehenderit in voluptate velit esse cillum
-          dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
-          proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+        <h2 class="store-map-title reveal">Find us on the Map</h2>
+        <p class="reveal">
+          A consultant who knows the material will call you back, usually the
+          same day. Bring a plan, a Pinterest board, or nothing at all.
         </p>
       </div>
 
-      <div class="store-map-frame">
+      <div class="store-map-frame reveal">
         <iframe
           class="store-map"
           src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3719.567206239365!2d81.66620221058446!3d21.2093450814707!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3a28dd87c1d1d18f%3A0x1b1ad606f77a58cc!2sRathi's%20Build%20Mart%20%3A%20Raipur%20%7C%20Bilaspur%20%7C%20Jagdalpur%20-%20Tiles%20%7C%20Bath%20%7C%20Interior!5e0!3m2!1sen!2sin!4v1792654610004!5m2!1sen!2sin"
           width="800"
-          height="450"
-          style="border:0; display:block; filter: grayscale(1) invert(0.92) contrast(0.85);"
+          height="600"
           allowfullscreen=""
           loading="lazy"
           referrerpolicy="strict-origin-when-cross-origin"
-          title="Rathi's Build Mart, Raipur on Google Maps">
+          title="Rathi&rsquo;s Build Mart, Raipur on Google Maps">
         </iframe>
       </div>
+
     </div>
   </div>
 </section>
 
 </main>
+
+<!-- ───────────────────────── Footer ─────────────────────── -->
+<footer class="foot">
+  <div class="container">
+
+    <div class="foot__top">
+      <div class="foot__brand">
+        <img src="assets/rbm-logo-gold-white.png" alt="Rathi's Build Mart"
+             width="642" height="175" loading="lazy" decoding="async">
+        <p class="foot__tagline">We have pieces to make<br>your project a masterpiece.</p>
+      </div>
+
+      <nav class="foot__cols" aria-label="Footer">
+        <div class="foot__col">
+          <h2 class="foot__head">Quick links</h2>
+          <ul>
+            <li><a href="about.html">About Us</a></li>
+            <li><a href="products.html">Products</a></li>
+            <li><a href="brands.html">Brands</a></li>
+            <li><a href="events.html">Events</a></li>
+            <li><a href="blogs.html">Blogs</a></li>
+            <li><a href="contact.html" aria-current="page">Contact Us</a></li>
+          </ul>
+        </div>
+
+        <div class="foot__col">
+          <h2 class="foot__head">Our experience stores</h2>
+          <ul>
+            <li><a href="index.html#stores">Raipur</a> <span class="foot__tel"><a href="tel:+918518882010">85188 82010</a></span></li>
+            <li><a href="index.html#stores">Bilaspur</a> <span class="foot__tel"><a href="tel:+918518882030">85188 82030</a></span></li>
+            <li><a href="index.html#stores">Jagdalpur</a> <span class="foot__tel"><a href="tel:+918518882020">85188 82020</a></span></li>
+          </ul>
+        </div>
+
+        <div class="foot__col">
+          <h2 class="foot__head">Contact</h2>
+          <ul>
+            <li><a href="mailto:rathibuildmart@gmail.com">rathibuildmart@gmail.com</a></li>
+            <li><a href="https://www.instagram.com/rathibuildmart/" target="_blank" rel="noopener">@rathibuildmart</a></li>
+          </ul>
+        </div>
+      </nav>
+    </div>
+
+    <div class="foot__bottom">
+      <p class="foot__copy">&copy; 2026 Rathi&rsquo;s Build Mart. All rights reserved.</p>
+      <!-- TODO: point these at the real pages once they are written. -->
+      <p class="foot__legal"><a href="#">Terms</a> <span aria-hidden="true">&middot;</span> <a href="#">Privacy</a></p>
+    </div>
+
+  </div>
+</footer>
 
 <script src="js/main.js?v=12" defer></script>
 <script src="js/contact.js" defer></script>

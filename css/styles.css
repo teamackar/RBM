@@ -3044,3 +3044,90 @@ body{
   .foot__cols{grid-template-columns:1fr;gap:clamp(24px,5vw,32px)}
   .foot__tel{display:block;margin-left:0}
 }
+
+
+/* ═══════════════════════════════════════════════════════════
+   Home page on a phone
+   ═════════════════════════════════════════════════════════ */
+
+/* Eight sections deep, each given a wide band of air at display
+   size. Stacked into a 390px column that air became the page:
+   about ten screens to scroll, and a good half of them empty.
+
+   Everything below is gated on width, so the desktop page is
+   left exactly as it was. It does three things only — takes the
+   bands down to a phone's scale, lets blocks that were stacked
+   one per row share a line, and settles a card that broke two
+   different ways depending on how long its text ran. */
+@media (max-width:760px){
+
+  /* ── The bands between sections ───────────────────────── */
+  /* A little over half what they were. Each section still opens
+     on its own hairline rule, so the join is marked and the air
+     does not have to do it. */
+  .legacy{padding-block:clamp(44px,6.5vh,62px)}
+  .dept{padding-block:clamp(46px,7vh,64px) clamp(38px,5.5vh,54px)}
+  .brands{padding-block:clamp(44px,6.5vh,62px) clamp(46px,7vh,64px)}
+  .voices{padding-block:clamp(44px,6.5vh,62px)}
+  .guides{padding-block:clamp(44px,6.5vh,62px)}
+  .visit{padding-block:clamp(44px,6.5vh,62px) clamp(46px,7vh,64px)}
+
+  /* ── Our legacy ───────────────────────────────────────── */
+  /* Four figures one per row ran to the best part of a screen on
+     their own. They are short enough to pair up; the number and
+     its label come down a step so the widest of them — 20,000+
+     over FAMILIES SERVED — still sits inside half a column. */
+  .legacy__stats{grid-template-columns:repeat(2,1fr);gap:12px}
+  .legacy .stat{padding:clamp(18px,4.6vw,26px) 10px;gap:.4em}
+  .legacy .stat__num{font-size:1.75rem}
+  .legacy .stat__label{font-size:.6875rem;letter-spacing:.08em}
+
+  /* ── Expert guides ────────────────────────────────────── */
+  /* Three picture-led cards one under another ran to a screen and
+     a half. Every other collection on this page — departments,
+     brands, testimonials — is swiped sideways at this width, so
+     the guides join them: the run goes edge to edge, snaps card to
+     card, and the next one is always half in view to say so. No
+     script needed; the overflow does the work, which is why this
+     is safe to leave to the CSS.
+
+     Scoped to .guides throughout, so the blog index keeps the
+     stacked cards these same classes give it there. */
+  .guides__grid{
+    display:flex;gap:14px;
+    margin-inline:calc(50% - 50vw);
+    padding-inline:var(--gutter);
+    overflow-x:auto;overscroll-behavior-x:contain;
+    scroll-snap-type:x mandatory;
+    scrollbar-width:none;
+  }
+  .guides__grid::-webkit-scrollbar{display:none}
+  .guides__grid > .post{flex:0 0 min(78vw,320px);scroll-snap-align:start}
+  .guides .post__media,
+  .guides .post--lead .post__media{aspect-ratio:16/10}
+  .guides .post__title{font-size:1.1875rem}
+
+  /* ── Visit a store ────────────────────────────────────── */
+  /* The address and the Directions pill hold one line whatever the
+     address runs to. Left to wrap, the two long addresses pushed
+     their pill onto a line of its own while Jagdalpur's short one
+     kept it up — three cards, two shapes. */
+  .store__foot{flex-wrap:nowrap;align-items:flex-end}
+
+  /* ── Footer ───────────────────────────────────────────── */
+  /* The one block here that is not the home page's alone, since it
+     now runs on every page. Quick links pair up, the store number
+     goes back beside its city — at full width there is room for it
+     — and the whole thing gives back a third of its height. */
+  .foot{margin-top:clamp(40px,6vh,56px);padding-block:clamp(34px,5vh,46px) clamp(20px,3vh,28px)}
+  .foot__cols{gap:clamp(20px,4vw,26px)}
+  .foot__col ul{margin-top:12px;gap:.55em}
+  .foot__col:first-child ul{grid-template-columns:1fr 1fr;gap:.55em 16px}
+  .foot__tel{display:inline-block;margin-left:.5em}
+  .foot__bottom{margin-top:clamp(24px,5vw,32px);padding-top:16px}
+}
+
+/* Narrower than this and a stat card cannot hold its own label. */
+@media (max-width:339px){
+  .legacy__stats{grid-template-columns:1fr}
+}

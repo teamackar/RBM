@@ -184,16 +184,21 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 @media (max-width:900px){.nav__brand img{height:52px}}
 
 .nav__links{display:flex;align-items:center;gap:30px;margin-left:auto}
-.nav__links > a{
+/* :not(.btn) throughout. The menu holds one link that is a button —
+   the Contact Us pill, which only appears once the menu collapses —
+   and this selector is a step heavier than .btn--primary, so without
+   the guard it handed that pill muted-ink text on its ivory ground
+   and squashed its padding to a plain link's. White on white. */
+.nav__links > a:not(.btn){
   position:relative;font-size:.875rem;color:var(--ink-muted);
   padding:6px 0;transition:color var(--dur-fast) var(--ease);
 }
-.nav__links > a::after{
+.nav__links > a:not(.btn)::after{
   content:"";position:absolute;left:0;bottom:0;height:1px;width:0;
   background:var(--champagne);transition:width var(--dur) var(--ease);
 }
-.nav__links > a:hover{color:var(--ink)}
-.nav__links > a:hover::after{width:100%}
+.nav__links > a:not(.btn):hover{color:var(--ink)}
+.nav__links > a:not(.btn):hover::after{width:100%}
 .nav__cta-mobile{display:none}
 
 .nav__toggle{
@@ -225,8 +230,12 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
     transition:opacity var(--dur-fast) var(--ease),transform var(--dur) var(--ease),visibility var(--dur);
   }
   .nav__links.is-open{opacity:1;visibility:visible;transform:none}
-  .nav__links > a{padding:12px 10px;font-size:1rem;color:var(--ink)}
-  .nav__links > a::after{display:none}
+  /* :not(.btn) matters. This selector is one step heavier than
+     .btn--primary, so without it the ivory pill at the foot of the
+     menu was handed ink-coloured text — white on white — along with
+     the plain links' padding and size. */
+  .nav__links > a:not(.btn){padding:12px 10px;font-size:1rem;color:var(--ink)}
+  .nav__links > a:not(.btn)::after{display:none}
   .nav__cta-mobile{display:inline-flex;margin-top:10px}
 }
 
@@ -522,6 +531,18 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .brands__current{
   font-family:var(--font-display);
   font-weight:400;font-size:1.625rem;line-height:1.2;letter-spacing:-.005em;
+}
+/* Playfair's ampersand is a swash form — an italic flourish in the
+   middle of an upright line, which reads as a different typeface
+   dropped in rather than as a conjunction. The one glyph is handed
+   to the body face and set a little smaller so it sits down on the
+   line with the lowercase. The tabs themselves are already in that
+   face, so this changes nothing there. */
+.brands__current .amp{
+  font-family:var(--font-body);
+  font-weight:300;font-size:.78em;
+  letter-spacing:0;
+  padding-inline:.04em;
 }
 
 /* The brand rail reuses .rail but sits inside the grid column,
@@ -1789,10 +1810,10 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 /* ── Nav: current page ─────────────────────────────────── */
 /* The champagne rule that hover draws is left standing on the page
    you are already on, so the navbar always says where you are. */
-.nav__links > a[aria-current="page"]{color:var(--ink)}
-.nav__links > a[aria-current="page"]::after{width:100%}
+.nav__links > a:not(.btn)[aria-current="page"]{color:var(--ink)}
+.nav__links > a:not(.btn)[aria-current="page"]::after{width:100%}
 @media (max-width:900px){
-  .nav__links > a[aria-current="page"]{color:var(--champagne)}
+  .nav__links > a:not(.btn)[aria-current="page"]{color:var(--champagne)}
 }
 
 
@@ -2822,7 +2843,12 @@ body{
   .people__grid--4{grid-template-columns:repeat(2,1fr)}
   .people__grid--3{max-width:none}
 }
-@media (max-width:400px){
+/* 400px was too generous a floor: at 390 it dropped the portraits
+   to one per row, and a single square plate then took a whole
+   phone screen each — eight of them ran to four screens of team.
+   Two fit perfectly well at 165px a side; only below 330 does one
+   of them genuinely stop working. */
+@media (max-width:330px){
   .people__grid--3,
   .people__grid--4{grid-template-columns:1fr;max-width:300px;margin-inline:auto}
 }
@@ -3107,12 +3133,43 @@ body{
   .guides .post--lead .post__media{aspect-ratio:16/10}
   .guides .post__title{font-size:1.1875rem}
 
+  /* ── Brands ───────────────────────────────────────────── */
+  /* One long row of logo tiles showed barely two of ten and gave
+     the section a thin, empty look. Two rows instead, flowing in
+     columns and swiped sideways — the same shape the rail takes at
+     display size, where it runs to three. The track is sized to its
+     own content so the .rail around it still does the scrolling. */
+  .rail--brands{display:block}
+  .rail--brands .rail__track{
+    display:grid;width:max-content;
+    grid-auto-flow:column;
+    grid-template-rows:repeat(2,auto);
+    grid-auto-columns:clamp(128px,38vw,160px);
+    gap:10px;
+  }
+  .rail--brands .brand{width:auto;height:84px;padding:10px}
+  .rail--brands .brand img{max-height:60px}
+  .brand__plate{padding:7px 11px;max-height:50px}
+
   /* ── Visit a store ────────────────────────────────────── */
   /* The address and the Directions pill hold one line whatever the
      address runs to. Left to wrap, the two long addresses pushed
      their pill onto a line of its own while Jagdalpur's short one
      kept it up — three cards, two shapes. */
   .store__foot{flex-wrap:nowrap;align-items:flex-end}
+
+  /* Three near-identical cards, and the only thing a reader needs
+     off them at a glance is the number. Everything around it comes
+     in: the band of padding, the air the rule was holding open, and
+     the step between the number and the address. */
+  .visit__stores{gap:10px}
+  .store{padding:16px 18px}
+  .store__city{font-size:.75rem;letter-spacing:.13em}
+  .store__city::after{margin-top:8px;width:min(38%,140px)}
+  .store__tel{padding-top:12px;font-size:1.3125rem}
+  .store__foot{margin-top:6px}
+  .store__addr{font-size:.8125rem;line-height:1.4}
+  .store__map{min-height:30px;padding:6px 14px;font-size:.75rem}
 
   /* ── Footer ───────────────────────────────────────────── */
   /* The one block here that is not the home page's alone, since it
@@ -3125,6 +3182,89 @@ body{
   .foot__col:first-child ul{grid-template-columns:1fr 1fr;gap:.55em 16px}
   .foot__tel{display:inline-block;margin-left:.5em}
   .foot__bottom{margin-top:clamp(24px,5vw,32px);padding-top:16px}
+
+  /* ── About ────────────────────────────────────────────── */
+  /* Two columns of portraits (see the 330px floor above), with the
+     air between them taken down to match. */
+  .people{padding-block:clamp(40px,6vh,56px)}
+  .people--found{padding-top:clamp(44px,6.5vh,62px)}
+  .people__grid{margin-top:clamp(22px,4vw,30px);gap:20px 14px}
+  .why{padding-block:clamp(40px,6vh,56px) clamp(46px,7vh,64px)}
+
+  /* ── Blogs ────────────────────────────────────────────── */
+  /* Five category chips centred and wrapping gave five ragged
+     lines of one chip each. They lie down into a single swiped row
+     instead, the way the brand tabs already do at this width. */
+  .blogjump{
+    flex-wrap:nowrap;justify-content:flex-start;
+    gap:8px;margin-top:clamp(22px,4vw,30px);
+    margin-inline:calc(50% - 50vw);
+    padding-inline:var(--gutter);
+    overflow-x:auto;overscroll-behavior-x:contain;
+    scrollbar-width:none;
+  }
+  .blogjump::-webkit-scrollbar{display:none}
+  .bpage{padding-block:clamp(104px,15vh,128px) clamp(46px,7vh,64px)}
+  .blogcat{padding-top:clamp(34px,5.5vw,46px)}
+  .blogcat__grid{margin-top:clamp(18px,3vw,24px);gap:22px}
+
+  /* ── Contact ──────────────────────────────────────────── */
+  /* The three ways were laid on their side here, with the label
+     held to a 120px column. Three actions of three different
+     lengths then started at three different places and the longest
+     ran to the card's edge. Upright again, which is how they are
+     drawn at every other width. */
+  .contact{padding-block:clamp(104px,15vh,128px) clamp(46px,7vh,64px)}
+  .ways{gap:10px}
+  .way{flex-direction:column;align-items:flex-start;gap:0;padding:16px 18px 15px}
+  .way__label{min-width:0}
+  .way__action{margin-top:8px;font-size:1.25rem}
+  .way__note{margin-top:5px;width:auto}
+  .contact__body{margin-top:clamp(16px,3vw,22px)}
+  .store-map-section{padding-block:clamp(26px,4vh,38px) clamp(46px,7vh,64px)}
+
+  /* The three ways across one line, as asked. Everything in them
+     steps down to make the room: a tighter card, a smaller label
+     over a smaller number, and the note beneath at the size of a
+     caption. The number is the one thing that must not wrap, so
+     the sizes below are set from it. */
+  .ways{grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}
+  .way{padding:12px 10px 11px}
+  .way__label{font-size:.5rem;letter-spacing:.1em;line-height:1.3}
+  .way__action{margin-top:6px;font-size:.8125rem;text-wrap:balance}
+  /* Only the number is held to one line — broken across two it
+     stops reading as a number. The other two actions are words and
+     wrap like words. */
+  .way__action[href^="tel:"]{white-space:nowrap;text-wrap:normal}
+  .way__note{margin-top:4px;font-size:.625rem;line-height:1.3}
+
+  /* ── Blogs ────────────────────────────────────────────── */
+  /* A category was a list of three cards one under another, which
+     is three screens to see three links. Swiped instead, like the
+     guides on the home page and the chips above it. */
+  .blogcat__grid{
+    display:flex;gap:14px;
+    margin-inline:calc(50% - 50vw);
+    padding-inline:var(--gutter);
+    overflow-x:auto;overscroll-behavior-x:contain;
+    scroll-snap-type:x mandatory;
+    scrollbar-width:none;
+  }
+  .blogcat__grid::-webkit-scrollbar{display:none}
+  .blogcat__grid > .post{flex:0 0 min(78vw,320px);scroll-snap-align:start}
+
+  /* ── Events ───────────────────────────────────────────── */
+  /* The event names are sized to their own measure, which is what
+     keeps them all filling the same width. On a phone the longest
+     of them — DRIFT SURFACE STUDIO — asked for less than the 2rem
+     floor, got 2rem anyway, and being set nowrap it ran 34px past
+     the screen. The floor comes down to a size that still fits,
+     and the nowrap is lifted so anything longer wraps rather than
+     pushing the page sideways. */
+  .elead__name{white-space:normal;text-wrap:balance}
+  @supports (container-type:inline-size){
+    .elead__name{font-size:clamp(1.5rem,calc(100cqw / var(--em,9)),10rem)}
+  }
 }
 
 /* Narrower than this and a stat card cannot hold its own label. */

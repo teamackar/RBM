@@ -290,7 +290,10 @@
       rail.style.setProperty('--brand-rows',
         String(Math.min(3, Math.max(1, Math.ceil(shown / 4)))));
 
-      if (title) title.textContent = tab.textContent.trim();
+      /* innerHTML, not textContent: the tab carries the ampersand
+         in a span so the display face can hand that one glyph to
+         the body face, and copying the text alone would drop it. */
+      if (title) title.innerHTML = tab.innerHTML.trim();
       rail.setAttribute('aria-labelledby', tab.id);
       rail.hidden = shown === 0;
       if (empty) empty.hidden = shown !== 0;

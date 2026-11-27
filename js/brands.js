@@ -38,7 +38,11 @@
   var OPEN = 2;
 
   function share(m) {
-    if (m <= 2) return {wide: 1.5, kept: 0.5};
+    // Alone on its row — a department whose count leaves a remainder
+    // of one. There are empty columns beside it, so it opens to the
+    // same two widths without anything having to give way.
+    if (m === 1) return {wide: OPEN, kept: 0};
+    if (m === 2) return {wide: 1.5, kept: 0.5};
     return {wide: OPEN, kept: (m - OPEN) / (m - 1)};
   }
 
@@ -66,7 +70,6 @@
 
     var row = Math.floor(i / n);
     var mates = visible.filter(function (c, j) { return Math.floor(j / n) === row; });
-    if (mates.length < 2) return;
 
     var m = mates.length;
     var w = share(m);

@@ -575,8 +575,20 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
   object-fit:contain;opacity:.82;
   transition:opacity var(--dur) var(--ease);
 }
+/* Every other file in the set carries generous transparent padding,
+   which is what holds those marks off the edge of the tile. This one
+   is trimmed to the ink, so at 100% it paints the full tile width and
+   reads far larger than its neighbours. Capped to sit with them. */
+.brand__tight{max-width:min(115px,66%)}
+
 /* The one black-on-transparent mark in the set, given its ground
    here too, for the reason set out beside .bcard__logo--plate. */
+/* Two of them now. Geberit's is a long thin strip and Kohler Artist
+   Editions a two-line lockup half as wide again as it is tall, so the
+   taller one is let up to the height the other marks on the rail get;
+   held to the strip's height it would have painted at two-thirds
+   their size. */
+.brand__plate--tall{max-height:84px}
 .brand__plate{
   background:var(--ink);
   border-radius:calc(var(--radius-sm) * .7);
@@ -1608,11 +1620,11 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
   left:var(--bcard-pad);top:var(--bcard-pad);translate:0 0;
 }
 
-/* Geberit's mark came as the black lockup, the only version in
-   the folder, and on this background its wordmark all but
-   vanishes. So it is given the pale ground it was drawn for
-   rather than being recoloured — nothing here repaints a brand's
-   logo. A negative version from Geberit retires this rule. */
+/* Geberit and Kohler Artist Editions both came as the black lockup,
+   the only version in the folder for either, and on this background
+   their wordmarks all but vanish. So they are given the pale ground
+   they were drawn for rather than being recoloured — nothing here
+   repaints a brand's logo. Negative versions retire this rule. */
 .bcard__logo--plate{
   background:var(--ink);
   border-radius:var(--radius-sm);
@@ -1642,7 +1654,10 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 }
 .bcard__meta{
   position:absolute;left:0;top:calc(100% + 5px);
-  white-space:nowrap;text-align:left;
+  /* Shrink-wrapped against the room left beside the mark, and allowed
+     to wrap rather than run under the card's edge: the card clips, so
+     nowrap meant a long line was cut off mid-word instead. */
+  text-align:left;text-wrap:pretty;
   font-size:.75rem;font-weight:300;line-height:1.4;
   letter-spacing:.035em;color:var(--ink-muted);
   opacity:0;transition:opacity .22s var(--ease);
@@ -3150,6 +3165,7 @@ body{
   .rail--brands .brand{width:auto;height:84px;padding:10px}
   .rail--brands .brand img{max-height:60px}
   .brand__plate{padding:7px 11px;max-height:50px}
+  .brand__plate--tall{max-height:60px}
 
   /* ── Visit a store ────────────────────────────────────── */
   /* The address and the Directions pill hold one line whatever the
@@ -3270,4 +3286,71 @@ body{
 /* Narrower than this and a stat card cannot hold its own label. */
 @media (max-width:339px){
   .legacy__stats{grid-template-columns:1fr}
+}
+
+
+/* ═══════════════════════════════════════════════════════════
+   Events page — type scale
+   ═════════════════════════════════════════════════════════ */
+
+/* Fayde Ke 20 Din leads this page, and its name is artwork rather
+   than type. Everything else was set to the same weight of gesture
+   and competed with it, so the rest of the page's own type is taken
+   down to 70% and the campaign is left where it is.
+
+   Above the phone breakpoint only. On a phone these sizes are
+   already at the bottom of their clamps — the hero title and the
+   event names sit on their floor there, not on a viewport figure —
+   so taking another 30% off would have been a cut out of the
+   smallest type on the site rather than a trim off the largest.
+   Below 761px not one rule here applies and the page is exactly as
+   it was.
+
+   The factor rides on a custom property rather than being written
+   into each size, so the whole scale moves together: change --esz
+   once to retune it. #fayde sets it back to 1, which is how that
+   block is excluded — by inheritance, not by a selector, so none of
+   these rules has to carry an id's weight.
+
+   Scoped to the page's own body class. .phero__*, .elead* and the
+   upcoming cards are all shared with other pages, and preevents.html
+   in particular is the same page in its earlier layout. */
+@media (min-width:761px){
+  .page-events{--esz:.7}
+  .page-events #fayde{--esz:1}
+
+  /* The events hero is the --tight variant, which sets its own
+     smaller size; scaling the base value would have made the title
+     bigger than it was, not smaller. */
+  .page-events .phero--tight .phero__title{font-size:calc(clamp(2.3rem,6.6vw,4.75rem) * var(--esz))}
+  .page-events .esec-title{font-size:calc(clamp(2rem,5.6vw,4.5rem) * var(--esz))}
+  .page-events .elead__sub{font-size:calc(clamp(1.5rem,4.2vw,3.4rem) * var(--esz))}
+  .page-events .upcard__day{font-size:calc(clamp(2.75rem,7.8vw,7rem) * var(--esz))}
+  .page-events .upcard__month{font-size:calc(clamp(1rem,2vw,1.75rem) * var(--esz))}
+  .page-events .upcard__name{font-size:calc(clamp(1.25rem,2.2vw,1.95rem) * var(--esz))}
+
+  /* The event names are sized to their own measure, so the factor
+     goes into that division rather than onto a finished value. Both
+     the container-query rule and its fallback carry it. */
+  .page-events .elead__name{font-size:calc(clamp(1.5rem,9.4vw,10rem) * var(--esz))}
+  @supports (container-type:inline-size){
+    .page-events .elead__name{
+      font-size:calc(clamp(2rem,calc(100cqw / var(--em,9)),10rem) * var(--esz));
+    }
+  }
+
+  /* Body copy stops at 13px rather than following the display type
+     all the way down. A straight 30% would put the ledes at 10.5px,
+     which is smaller than anything else on the site and below what
+     this page can ask of a reader. Drop the max() to take the
+     factor literally. */
+  .page-events .phero__lede{
+    font-size:max(.8125rem,calc(clamp(.9375rem,1.35vw,1.0625rem) * var(--esz)));
+  }
+  .page-events .elead__lede{
+    font-size:max(.8125rem,calc(clamp(.8125rem,1.05vw,.9375rem) * var(--esz)));
+  }
+  .page-events .upcard__copy{
+    font-size:max(.8125rem,calc(clamp(.8125rem,1.05vw,.9375rem) * var(--esz)));
+  }
 }
